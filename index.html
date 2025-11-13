@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cartão pra Gabi</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#f7c948;--muted:#94a3b8;--glass:rgba(255,255,255,0.04)}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background: linear-gradient(180deg,#071327 0%, #081827 100%);color:#e6eef8}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{width:100%;max-width:420px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:0 6px 30px rgba(2,6,23,0.6);backdrop-filter:blur(6px);position:relative;overflow:hidden}
+    h1{margin:0 0 6px 0;font-size:20px}
+    p.lead{color:var(--muted);margin:0 0 14px 0}
+    .big-heart{display:flex;align-items:center;gap:12px}
+    .heart{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#ff9fb1,#ff6b81);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(255,107,129,0.18);cursor:pointer;transition:transform .18s ease, box-shadow .18s ease;flex:0 0 auto}
+    .heart:active{transform:scale(0.96)}
+    .heart.pulse{transform:scale(1.08);box-shadow:0 12px 28px rgba(255,107,129,0.22)}
+    .heart svg{width:28px;height:28px;filter:drop-shadow(0 3px 8px rgba(255,107,129,0.25))}
+    .preview{margin-top:14px;background:rgba(255,255,255,0.02);padding:12px;border-radius:12px}
+    .reveal{margin-top:14px;padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));display:none;opacity:0;transform:translateY(10px);transition:opacity .6s ease, transform .6s ease;position:relative}
+    .small{font-size:13px;color:var(--muted)}
+    .confetti-canvas{position:fixed;left:0;top:0;pointer-events:none;width:100%;height:100%}
+    .footer{margin-top:14px;font-size:13px;color:var(--muted);text-align:center}
+    .typing-cursor{display:inline-block;width:8px;height:18px;background:linear-gradient(180deg,#e6eef8,#cfdff0);margin-left:4px;vertical-align:bottom;animation:blink 1s steps(2) infinite}
+    @keyframes blink{50%{opacity:0}}
+    /* spark styles */
+    .spark { position: absolute; width:8px; height:8px; border-radius:50%; pointer-events:none; transform: translate(-50%,-50%) scale(1); opacity:1; will-change: transform, opacity; animation: spark-move 700ms cubic-bezier(.2,.9,.2,1) forwards; mix-blend-mode:screen }
+    @keyframes spark-move {
+      0% { transform: translate(-50%,-50%) translate(0,0) scale(1); opacity:1 }
+      100% { transform: translate(-50%,-50%) translate(var(--tx), var(--ty)) scale(.3); opacity:0 }
+    }
+    /* confetti particle fallback small shapes if needed */
+    .spark-ring { box-shadow: 0 0 6px rgba(255,255,255,0.12) inset; }
+    @media (min-width:600px){.card{padding:26px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="main" aria-live="polite">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h1 id="title">Bom dia, Gabi ✨</h1>
+          <p class="lead">Para esse dia especial <br> na sua vida  -  💌</p>
+        </div>
+        <div class="big-heart">
+          <div class="heart" id="heart" title="Abrir" role="button" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-4.35-9-7.36C-0.08 7.78 6 3 12 8c6-5 12.08-0.22 9 5.64C19 16.65 12 21 12 21z" fill="white" opacity="0.95"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview" id="preview">
+        <div class="small">Toque no coração pra abrir uma mensagem</div>
+      </div>
+
+      <div class="reveal" id="reveal" aria-hidden="true">
+        <div id="verse" style="font-weight:600">JOÃO 15:9</div>
+        <div id="quote" style="margin-top:8px;font-weight:500">“Assim como o Pai me amou, também Eu amei vocês. Permaneçam no meu amor.”<span id="cursor" class="typing-cursor" style="display:none"></span></div>
+        <div id="subtitle" style="margin-top:12px;color:var(--muted)">O amor de Deus por Jesus é o mesmo amor que Ele tem por você. Que Ele te envolva com ternura e paz.</div>
+
+        <div style="margin-top:12px;font-weight:600">Uma oração rápida:</div>
+        <div id="prayer" style="margin-top:8px;color:var(--muted)">Senhor, que tua paz e ternura envolvam a vida da Gabi hoje. Guarda-a, guia-a e enche-a do teu amor. Amém.</div>
+
+        <div style="margin-top:14px;color:var(--muted);font-size:13px;text-align:center">— Feito com carinho por Erick —</div>
+      </div>
+
+      <div class="footer">🎉🎉🎉</div>
+
+      <!-- container for tiny sparks -->
+      <div id="spark-container" aria-hidden="true" style="position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;"></div>
+    </div>
+  </div>
+
+  <canvas class="confetti-canvas" id="confetti"></canvas>
+
+  <script>
+    // ----- small fixes + variables -----
+    const recipient = 'Gabi';
+    document.getElementById('title').textContent = `Bom dia, ${recipient} ✨`;
+
+    const heart = document.getElementById('heart');
+    const reveal = document.getElementById('reveal');
+    const preview = document.getElementById('preview');
+    const confettiCanvas = document.getElementById('confetti');
+    const sparkContainer = document.getElementById('spark-container');
+
+    // ---- audio chime ----
+    function playChime(){
+      try{
+        const ctx = new (window.AudioContext||window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type='sine'; o.frequency.value=880;
+        g.gain.value=0.0001;
+        o.connect(g); g.connect(ctx.destination);
+        const now = ctx.currentTime;
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(0.06, now+0.02);
+        o.start(now);
+        g.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
+        o.stop(now+1.3);
+      }catch(e){console.warn('Audio not supported', e)}
+    }
+
+    // ---- confetti burst (keeps original idea but fixed) ----
+    function burstConfetti(){
+      const c = confettiCanvas;
+      const w = c.width = window.innerWidth;
+      const h = c.height = window.innerHeight;
+      const ctx = c.getContext('2d');
+      let pieces = [];
+      const colors = ['#ffb4c6','#ffd6a5','#c7f9cc','#bde0fe','#ffd6e0'];
+      for(let i=0;i<80;i++){
+        pieces.push({
+          x: Math.random()*w,
+          y: Math.random()*(-h*0.5),
+          vy: 2 + Math.random()*4,
+          vx: (Math.random()-0.5)*5,
+          r: 2 + Math.random()*6,
+          color: colors[Math.floor(Math.random()*colors.length)]
+        });
+      }
+      let t=0;
+      function loop(){
+        ctx.clearRect(0,0,w,h);
+        pieces.forEach(p=>{
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.05;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.r, p.r*1.6);
+        });
+        t++;
+        if(t<200) requestAnimationFrame(loop);
+        else ctx.clearRect(0,0,w,h);
+      }
+      loop();
+    }
+
+    // ---- spark emitter: creates small elements that fly out and fade ----
+    function emitSparks(x, y, count = 12){
+      for(let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className = 'spark spark-ring';
+        // random color-ish
+        const palette = ['#fff9c4','#ffd6a5','#ffb4c6','#bde0fe','#c7f9cc'];
+        s.style.background = palette[Math.floor(Math.random()*palette.length)];
+        // random travel distance and direction via CSS variables
+        const angle = (Math.random()*Math.PI*2);
+        const dist = 40 + Math.random()*70;
+        const tx = Math.round(Math.cos(angle)*dist) + 'px';
+        const ty = Math.round(Math.sin(angle)*dist) + 'px';
+        s.style.setProperty('--tx', tx);
+        s.style.setProperty('--ty', ty);
+        s.style.left = `${x}px`;
+        s.style.top = `${y}px`;
+        s.style.opacity = '1';
+        // random size
+        const size = 6 + Math.random()*8;
+        s.style.width = `${size}px`;
+        s.style.height = `${size}px`;
+        sparkContainer.appendChild(s);
+        // cleanup
+        setTimeout(()=>{ s.remove(); }, 800);
+      }
+    }
+
+    // ---- typing effect: types text into an element, emits sparks while typing ----
+    function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+    async function typeText(elem, fullText, {speed = 35, sparkEvery = 2, sparkCount=6} = {}){
+      elem.textContent = '';
+      const cursor = document.getElementById('cursor');
+      if(cursor) cursor.style.display = 'inline-block';
+      let count = 0;
+      for(let i=0;i<fullText.length;i++){
+        const ch = fullText[i];
+        elem.textContent += ch;
+        count++;
+        // emit small sparks from heart position sometimes
+        if(count % sparkEvery === 0){
+          const hr = heart.getBoundingClientRect();
+          const card = document.querySelector('.card').getBoundingClientRect();
+          // position relative to spark-container (which is absolute within card)
+          const x = (hr.left + hr.right)/2 - card.left;
+          const y = (hr.top + hr.bottom)/2 - card.top;
+          emitSparks(x, y, sparkCount);
+        }
+        await sleep(speed + Math.random()*15);
+      }
+      if(cursor) cursor.style.display = 'none';
+    }
+
+    // ---- open card logic with typing + effects ----
+    function openCard(){
+      // idempotent open
+      if(reveal.getAttribute('aria-hidden')==='false') return;
+      preview.style.display='none';
+      reveal.style.display='block';
+      requestAnimationFrame(()=>{
+        reveal.style.opacity='1';
+        reveal.style.transform='translateY(0)';
+        reveal.setAttribute('aria-hidden','false');
+        heart.classList.add('pulse');
+        setTimeout(()=>heart.classList.remove('pulse'),400);
+      });
+
+      // audio + confetti
+      playChime();
+      burstConfetti();
+
+      // typing effect: quote then prayer (with brief pause)
+      const quoteElem = document.getElementById('quote');
+      const prayerElem = document.getElementById('prayer');
+
+      // store original text
+      const originalQuote = `“Assim como o Pai me amou, também Eu amei vocês. Permaneçam no meu amor.”`;
+      const originalPrayer = `Senhor, que tua paz e ternura envolvam a vida da Gabi hoje. Guarda-a, guia-a e enche-a do teu amor. Amém.`;
+
+      // run typing (async)
+      (async ()=>{
+        // small delay so reveal animations are visible
+        await sleep(220);
+        await typeText(quoteElem, originalQuote, {speed: 32, sparkEvery: 2, sparkCount: 6});
+        await sleep(360);
+        await typeText(prayerElem, originalPrayer, {speed: 28, sparkEvery: 3, sparkCount: 5});
+      })();
+    }
+
+    heart.addEventListener('click', openCard);
+    heart.addEventListener('touchend', (e)=>{ e.preventDefault(); openCard(); });
+
+    // keyboard
+    heart.setAttribute('tabindex','0');
+    heart.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); openCard(); }});
+
+    // clicking outside hides (and resets reveal to preview)
+    document.addEventListener('click', (e)=>{
+      if(!document.querySelector('.card').contains(e.target) && reveal.style.display=='block'){
+        reveal.style.opacity='0';
+        reveal.style.transform='translateY(10px)';
+        reveal.setAttribute('aria-hidden','true');
+        setTimeout(()=>{ 
+          // reset displayed text (so it will type again on next open)
+          document.getElementById('quote').textContent = '';
+          document.getElementById('prayer').textContent = '';
+          reveal.style.display='none'; preview.style.display='block'; 
+        }, 450);
+      }
+    });
+
+    // ensure canvas resizes
+    function resizeCanvas(){ const c = confettiCanvas; c.width = window.innerWidth; c.height = window.innerHeight; }
+    window.addEventListener('resize', ()=>{
+      resizeCanvas();
+      const c = document.getElementById('confetti');
+      c.width = window.innerWidth; c.height = window.innerHeight;
+    });
+    // initial resize
+    resizeCanvas();
+
+  </script>
+</body>
+</html>
