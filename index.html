@@ -16,7 +16,7 @@
 
   <style>
     :root {
-      --glass-bg: rgba(15, 23, 42, 0.65);
+      --glass-bg: rgba(15, 23, 42, 0.50);   /* mais transparente */
       --glass-border: rgba(148, 163, 184, 0.45);
       --text-main: #e5e7eb;
       --text-muted: #cbd5f5;
@@ -39,18 +39,20 @@
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: radial-gradient(circle at top, #0b1220 0, #020617 55%, #000 100%);
+      background: #000;
       overflow: hidden;
     }
 
-    /* Fundo com paisagem */
+    /* ============================
+       FUNDO (AGORA 80% VISÍVEL)
+       ============================ */
     .bg-image {
       position: fixed;
       inset: 0;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      filter: brightness(0.9);
+      filter: brightness(0.85);   /* AQUI: imagem BEM mais visível */
       z-index: -2;
       transition: background-image 0.7s ease-out, filter 0.4s ease-out;
     }
@@ -59,9 +61,9 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(circle at top, rgba(15, 23, 42, 0.15) 0, rgba(15, 23, 42, 0.6) 55%, rgba(2, 6, 23, 0.85) 100%),
-        linear-gradient(to bottom right, rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.75));
+        radial-gradient(circle at top, rgba(0, 0, 0, 0.10) 0, rgba(0, 0, 0, 0.30) 55%, rgba(0, 0, 0, 0.40) 100%);
       z-index: -1;
+      /* SOBREPOSIÇÃO MUITO MENOR */
     }
 
     .app {
@@ -73,11 +75,9 @@
       background: var(--glass-bg);
       border-radius: 1.8rem;
       border: 1px solid var(--glass-border);
-      backdrop-filter: blur(18px);
-      box-shadow:
-        0 24px 40px rgba(15, 23, 42, 0.7),
-        0 0 0 1px rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(12px);
       padding: 24px 20px 20px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
     }
 
     @media (min-width: 768px) {
@@ -107,7 +107,7 @@
       gap: 8px;
       padding: 4px 10px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.65);
       border: 1px solid rgba(148, 163, 184, 0.5);
       font-size: 0.7rem;
       text-transform: uppercase;
@@ -127,6 +127,7 @@
       font-size: clamp(1.5rem, 3vw, 1.9rem);
       font-weight: 600;
       letter-spacing: -0.03em;
+      text-shadow: 0 0 10px rgba(0,0,0,0.45);
     }
 
     .title span.brand {
@@ -148,29 +149,11 @@
       gap: 8px;
       padding: 8px 14px;
       border-radius: 999px;
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.65);
       border: 1px solid rgba(148, 163, 184, 0.65);
       font-size: 0.76rem;
       color: var(--text-muted);
       white-space: nowrap;
-    }
-
-    .timer-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      border: 1px solid var(--accent);
-      box-shadow: 0 0 12px rgba(250, 204, 21, 0.9);
-      position: relative;
-    }
-
-    .timer-dot::after {
-      content: "";
-      position: absolute;
-      inset: -4px;
-      border-radius: inherit;
-      border: 1px solid rgba(250, 204, 21, 0.35);
     }
 
     .layout {
@@ -190,193 +173,30 @@
       border-radius: 1.5rem;
       border: 1px solid rgba(148, 163, 184, 0.5);
       padding: 18px 18px 16px;
-      background:
-        radial-gradient(circle at top left, rgba(248, 250, 252, 0.12), transparent 60%),
-        rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.55); /* MAIS CLARO */
       overflow: hidden;
-    }
-
-    .verse-card::before {
-      content: "“";
-      position: absolute;
-      font-size: 7rem;
-      line-height: 1;
-      top: -40px;
-      left: 14px;
-      opacity: 0.08;
-    }
-
-    .verse-ref {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-    }
-
-    .version-tag {
-      font-size: 0.68rem;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.7);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
     }
 
     .verse-text {
-      font-size: clamp(1.1rem, 2.2vw, 1.4rem);
-      line-height: 1.8;
+      font-size: clamp(1.15rem, 2.2vw, 1.45rem);
+      line-height: 1.85;
       margin-bottom: 16px;
       font-weight: 400;
-    }
-
-    .verse-helper {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-    }
-
-    .controls-card {
-      border-radius: 1.4rem;
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      background: linear-gradient(
-        145deg,
-        rgba(15, 23, 42, 0.9),
-        rgba(15, 23, 42, 0.82)
-      );
-      padding: 16px 16px 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .progress-title {
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-
-    .progress-sub {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-    }
-
-    .progress-bar-wrapper {
-      margin-top: 10px;
-      width: 100%;
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      width: 0%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #facc15, #22d3ee);
-      transition: width 0.3s linear;
-    }
-
-    .progress-footer {
-      margin-top: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .stat-pill {
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      background: rgba(15, 23, 42, 0.95);
-      font-size: 0.74rem;
+      text-shadow: 0 0 8px rgba(0,0,0,0.5);
     }
 
     .primary-button {
       margin-top: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 10px 0;
-      width: 100%;
+      padding: 12px 0;
       border-radius: 999px;
       border: none;
-      font-size: 0.9rem;
-      font-weight: 500;
+      width: 100%;
+      font-size: 1rem;
       background: radial-gradient(circle at 0% 0%, #facc15, #f97316);
       color: #111827;
       cursor: pointer;
-      box-shadow:
-        0 12px 30px rgba(249, 115, 22, 0.55),
-        0 0 0 1px rgba(248, 250, 252, 0.06);
-      transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        filter 0.12s ease-out;
-    }
-
-    .primary-button span.chevron {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-      border-radius: 999px;
-      border: 1px solid rgba(0, 0, 0, 0.3);
-      font-size: 0.8rem;
-    }
-
-    .primary-button:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.03);
-      box-shadow:
-        0 18px 38px rgba(249, 115, 22, 0.7),
-        0 0 0 1px rgba(248, 250, 252, 0.08);
-    }
-
-    .primary-button:active {
-      transform: translateY(0);
-      box-shadow:
-        0 10px 24px rgba(249, 115, 22, 0.45),
-        0 0 0 1px rgba(248, 250, 252, 0.05);
-    }
-
-    .footer {
-      margin-top: 14px;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .chip {
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      background: rgba(15, 23, 42, 0.9);
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(249, 115, 22, 0.55);
     }
 
     /* Animação suave */
@@ -395,300 +215,163 @@
 
 <body>
 
-  <!-- Fundo com paisagem carregada por API -->
   <div class="bg-image" id="bgImage"></div>
   <div class="bg-overlay"></div>
 
   <main class="app">
     <section class="card">
+
       <header class="header">
         <div class="title-area">
           <div class="badge">
             <span class="badge-dot"></span>
-            <span>Devocional • Versos ACF</span>
+            <span>Devocional • ACF</span>
           </div>
           <h1 class="title">
-            Versos em
-            <span class="brand">foco</span>
+            Versos em <span class="brand">foco</span>
           </h1>
-          <p class="subtitle">
-            Um versículo por vez, sobre uma paisagem tranquila,
-            para você respirar, meditar e conversar com Deus.
-          </p>
+          <p class="subtitle">Um versículo por vez, numa paisagem tranquila.</p>
         </div>
 
         <div class="timer-pill">
-          <div class="timer-dot"></div>
-          <span>
-            Próxima troca em <strong id="countdown">60s</strong>
-          </span>
+          Próxima troca em <strong id="countdown">60s</strong>
         </div>
       </header>
 
       <section class="layout">
+
         <article class="verse-card">
           <div class="verse-ref" id="verseRef">
-            <span>Preparando o primeiro versículo…</span>
+            <span>Carregando…</span>
             <span class="version-tag">ACF</span>
           </div>
 
           <p class="verse-text" id="verseText">
-            Carregando devocional de hoje…
-          </p>
-
-          <p class="verse-helper">
-            Quando o versículo aparecer, respire fundo, leia sem pressa
-            e use a paisagem ao fundo como cenário para a sua oração.
+            Aguarde…
           </p>
         </article>
 
-        <aside class="controls-card">
-          <div>
-            <p class="progress-title">Sessão de leitura</p>
-            <p class="progress-sub">
-              Versículos exibidos hoje:
-              <strong id="currentIndexLabel">0</strong>
-            </p>
-
-            <div class="progress-bar-wrapper">
-              <div class="progress-bar" id="progressBar"></div>
-            </div>
-
-            <div class="progress-footer">
-              <span>Próxima troca em <strong id="countdownInline">60s</strong></span>
-              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                <span class="stat-pill">
-                  <span id="readCount">0</span> lidos
-                </span>
-                <span class="stat-pill" id="loopIndicator">
-                  Começando agora ✨
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <button class="primary-button" id="nextButton" type="button">
-            <span>Próximo versículo</span>
-            <span class="chevron">➜</span>
-          </button>
+        <aside>
+          <button class="primary-button" id="nextButton">Próximo versículo ➜</button>
         </aside>
+
       </section>
 
-      <footer class="footer">
-        <div class="chips">
-          <span class="chip">Versos ACF locais</span>
-          <span class="chip">Paisagem aleatória</span>
-          <span class="chip">Auto a cada 1 min</span>
-        </div>
-        <span>Use sua Bíblia ACF para ler o contexto completo de cada verso.</span>
-      </footer>
     </section>
   </main>
 
   <script>
-    // =========================
-    // CONFIGURAÇÕES
-    // =========================
-    var INTERVAL_MS = 60000; // 1 minuto
+    const API = "https://www.abibliadigital.com.br/api";
+    const TOKEN = "free";
+    const VERSION = "acf";
+    let remaining = 60000;
+    let timer;
 
-    // Paisagens: picsum.photos (placeholder com blur)
-    var LANDSCAPE_URL_BASE = "https://picsum.photos/1600/900?blur=1&random=";
+    const verseRefEl = document.getElementById("verseRef");
+    const verseTextEl = document.getElementById("verseText");
+    const countdownEl = document.getElementById("countdown");
+    const bgImageEl = document.getElementById("bgImage");
+    const button = document.getElementById("nextButton");
 
-    // Versos ACF locais (texto completo no próprio front)
-    var VERSES = [
-      {
-        reference: "Salmos 23:1 (ACF)",
-        text: "O Senhor é o meu pastor; nada me faltará."
-      },
-      {
-        reference: "Filipenses 4:6 (ACF)",
-        text: "Não andeis ansiosos por coisa alguma; em tudo, porém, sejam conhecidas diante de Deus as vossas petições, pela oração e súplica, com ações de graças."
-      },
-      {
-        reference: "Romanos 8:28 (ACF)",
-        text: "E sabemos que todas as coisas contribuem juntamente para o bem daqueles que amam a Deus, daqueles que são chamados por seu decreto."
-      },
-      {
-        reference: "Isaías 41:10 (ACF)",
-        text: "Não temas, porque eu sou contigo; não te assombres, porque eu sou o teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destra da minha justiça."
-      },
-      {
-        reference: "João 3:16 (ACF)",
-        text: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna."
-      },
-      {
-        reference: "Mateus 11:28 (ACF)",
-        text: "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei."
-      },
-      {
-        reference: "Josué 1:9 (ACF)",
-        text: "Não to mandei eu? Esforça-te, e tem bom ânimo; não temas, nem te espantes; porque o Senhor, teu Deus, é contigo, por onde quer que andares."
-      },
-      {
-        reference: "Provérbios 3:5 (ACF)",
-        text: "Confia no Senhor de todo o teu coração e não te estribes no teu próprio entendimento."
-      },
-      {
-        reference: "Romanos 12:12 (ACF)",
-        text: "Alegrai-vos na esperança, sede pacientes na tribulação, perseverai na oração."
-      },
-      {
-        reference: "Salmos 46:1 (ACF)",
-        text: "Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia."
-      },
-      {
-        reference: "Salmos 121:1-2 (ACF)",
-        text: "Levantarei os meus olhos para os montes, de onde vem o meu socorro. O meu socorro vem do Senhor, que fez o céu e a terra."
-      },
-      {
-        reference: "2 Coríntios 12:9 (ACF)",
-        text: "A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza."
-      }
-    ];
-
-    // Estado
-    var remainingMs = INTERVAL_MS;
-    var timerId = null;
-    var readCount = 0;
-    var isLoadingVerse = false;
-
-    // Elementos
-    var verseRefEl = document.getElementById("verseRef");
-    var verseTextEl = document.getElementById("verseText");
-    var countdownEl = document.getElementById("countdown");
-    var countdownInlineEl = document.getElementById("countdownInline");
-    var progressBarEl = document.getElementById("progressBar");
-    var currentIndexLabelEl = document.getElementById("currentIndexLabel");
-    var readCountEl = document.getElementById("readCount");
-    var loopIndicatorEl = document.getElementById("loopIndicator");
-    var nextButton = document.getElementById("nextButton");
-    var bgImageEl = document.getElementById("bgImage");
-
-    // =========================
-    // FUNÇÕES AUXILIARES
-    // =========================
-    function formatSeconds(ms) {
-      var sec = Math.ceil(ms / 1000);
-      return sec + "s";
-    }
-
-    function updateCountdown() {
-      var value = formatSeconds(remainingMs);
-      countdownEl.textContent = value;
-      countdownInlineEl.textContent = value;
-      var percentage = 100 - (remainingMs / INTERVAL_MS) * 100;
-      progressBarEl.style.width = percentage + "%";
-    }
-
-    function setFadeAnimation() {
-      verseTextEl.classList.remove("fade-enter", "fade-enter-active");
-      void verseTextEl.offsetWidth; // força reflow
-      verseTextEl.classList.add("fade-enter");
-      requestAnimationFrame(function () {
-        verseTextEl.classList.add("fade-enter-active");
-      });
-    }
-
+    // ============================
+    // FUNDO AUTOMÁTICO (CLAREADO)
+    // ============================
     function refreshBackground() {
-      var url = LANDSCAPE_URL_BASE + Date.now();
-      var img = new Image();
-      img.onload = function () {
-        bgImageEl.style.backgroundImage = 'url("' + url + '")';
-      };
-      img.onerror = function () {
-        console.warn("Falha ao carregar imagem de fundo");
-      };
-      img.src = url;
+      const url = "https://picsum.photos/1600/900?random=" + Date.now();
+      bgImageEl.style.backgroundImage = `url(${url})`;
     }
 
-    function getRandomVerse() {
-      var index = Math.floor(Math.random() * VERSES.length);
-      return VERSES[index];
+    // ============================
+    // BUSCAR LIVROS
+    // ============================
+    let booksCache = null;
+    async function loadBooks() {
+      if (booksCache) return booksCache;
+
+      const res = await fetch(`${API}/books`, {
+        headers: { Authorization: "Bearer free" }
+      });
+      booksCache = await res.json();
+      return booksCache;
     }
 
-    function loadAndShowNewVerse() {
-      if (isLoadingVerse) return;
-      isLoadingVerse = true;
-
-      verseRefEl.innerHTML = '\
-        <span>Carregando versículo…</span>\
-        <span class="version-tag">ACF</span>\
-      ';
-      verseTextEl.textContent = "Buscando versículo para hoje…";
+    // ============================
+    // VERSÍCULO ALEATÓRIO REAL
+    // ============================
+    async function loadRandomVerse() {
+      verseRefEl.innerHTML = `<span>Carregando…</span><span class="version-tag">ACF</span>`;
+      verseTextEl.textContent = "Buscando versículo…";
 
       try {
-        var verse = getRandomVerse();
+        const books = await loadBooks();
+        const book = books[Math.floor(Math.random() * books.length)];
+        const abbrev = book.abbrev.pt || book.abbrev;
+        const chapter = Math.floor(Math.random() * book.chapters) + 1;
 
-        verseRefEl.innerHTML = '\
-          <span>' + verse.reference + '</span>\
-          <span class="version-tag">ACF</span>\
-        ';
+        const req = await fetch(`${API}/verses/${VERSION}/${abbrev}/${chapter}`, {
+          headers: { Authorization: "Bearer free" }
+        });
+
+        const data = await req.json();
+        const verses = data.verses;
+        const verse = verses[Math.floor(Math.random() * verses.length)];
+
+        verseRefEl.innerHTML = `<span>${book.name} ${chapter}:${verse.number}</span>
+                                <span class='version-tag'>ACF</span>`;
         verseTextEl.textContent = verse.text;
 
-        readCount++;
-        readCountEl.textContent = String(readCount);
-        currentIndexLabelEl.textContent = String(readCount);
-
-        if (readCount === 1) {
-          loopIndicatorEl.textContent = "Primeiro passo do dia 🙌";
-        } else if (readCount >= 5 && readCount < 15) {
-          loopIndicatorEl.textContent = "Ritmo bom de meditação 💛";
-        } else if (readCount >= 15) {
-          loopIndicatorEl.textContent = "Sessão profunda de leitura 🔥";
-        }
-
-        setFadeAnimation();
+        animateVerse();
         refreshBackground();
-      } catch (err) {
-        console.error(err);
-        verseRefEl.innerHTML = '\
-          <span>Erro ao carregar</span>\
-          <span class="version-tag">ACF</span>\
-        ';
-        verseTextEl.textContent =
-          "Não foi possível carregar o versículo agora. Tente novamente em alguns instantes.";
-      } finally {
-        isLoadingVerse = false;
+
+      } catch (e) {
+        verseTextEl.textContent = "Erro ao carregar. Tente novamente.";
       }
+    }
+
+    // ============================
+    // ANIMAÇÃO
+    // ============================
+    function animateVerse() {
+      verseTextEl.classList.remove("fade-enter", "fade-enter-active");
+      void verseTextEl.offsetWidth;
+      verseTextEl.classList.add("fade-enter");
+
+      requestAnimationFrame(() => verseTextEl.classList.add("fade-enter-active"));
+    }
+
+    // ============================
+    // TIMER
+    // ============================
+    function updateTimer() {
+      countdownEl.textContent = Math.ceil(remaining / 1000) + "s";
     }
 
     function startTimer() {
-      if (timerId) {
-        clearInterval(timerId);
-      }
-      remainingMs = INTERVAL_MS;
-      updateCountdown();
+      clearInterval(timer);
+      remaining = 60000;
+      updateTimer();
 
-      timerId = setInterval(function () {
-        remainingMs -= 1000;
-        if (remainingMs <= 0) {
-          remainingMs = INTERVAL_MS;
-          updateCountdown();
-          loadAndShowNewVerse();
-        } else {
-          updateCountdown();
+      timer = setInterval(() => {
+        remaining -= 1000;
+        if (remaining <= 0) {
+          loadRandomVerse();
+          remaining = 60000;
         }
+        updateTimer();
       }, 1000);
     }
 
-    function resetTimer() {
-      remainingMs = INTERVAL_MS;
-      updateCountdown();
-    }
+    // ============================
+    // INÍCIO
+    // ============================
+    refreshBackground();
+    loadRandomVerse();
+    startTimer();
 
-    // =========================
-    // INICIALIZAÇÃO
-    // =========================
-    (function init() {
-      refreshBackground();
-      loadAndShowNewVerse();
-      startTimer();
-    })();
-
-    nextButton.addEventListener("click", function () {
-      resetTimer();
-      loadAndShowNewVerse();
-    });
+    button.onclick = () => {
+      remaining = 60000;
+      loadRandomVerse();
+    };
   </script>
 </body>
 
