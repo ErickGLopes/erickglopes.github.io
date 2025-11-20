@@ -1,18 +1,28 @@
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Paisagens Aleatórias</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Devocional • Versículos ACF</title>
+
+  <!-- Fonte -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
 
   <style>
     :root {
-      --bg: #020617;
-      --glass: rgba(15, 23, 42, 0.72);
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.18);
-      --text: #e2e8f0;
-      --muted: #94a3b8;
+      --glass-bg: rgba(15, 23, 42, 0.65);
+      --glass-border: rgba(148, 163, 184, 0.45);
+      --text-main: #e5e7eb;
+      --text-muted: #cbd5f5;
+      --accent: #facc15;
+      --accent-soft: rgba(250, 204, 21, 0.16);
+      --success: #22c55e;
     }
 
     * {
@@ -21,432 +31,665 @@
       padding: 0;
     }
 
-    html, body {
-      height: 100%;
-      width: 100%;
-    }
-
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      min-height: 100vh;
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-main);
       display: flex;
-      align-items: stretch;
+      align-items: center;
       justify-content: center;
+      padding: 20px;
+      background: radial-gradient(circle at top, #0b1220 0, #020617 55%, #000 100%);
       overflow: hidden;
     }
 
-    .bg-image,
-    .bg-image-next {
+    /* Fundo com paisagem */
+    .bg-image {
       position: fixed;
       inset: 0;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      filter: brightness(0.85);
-      transition: opacity 1s ease;
-      will-change: opacity;
-    }
-
-    .bg-image {
-      opacity: 1;
+      filter: brightness(0.9);
       z-index: -2;
+      transition: background-image 0.7s ease-out, filter 0.4s ease-out;
     }
 
-    .bg-image-next {
-      opacity: 0;
-      z-index: -3;
-    }
-
-    .overlay {
+    .bg-overlay {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at top, rgba(15,23,42,0.4), transparent 45%),
-                  linear-gradient(to bottom, rgba(15,23,42,0.7), rgba(15,23,42,0.95));
+      background:
+        radial-gradient(circle at top, rgba(15, 23, 42, 0.15) 0, rgba(15, 23, 42, 0.6) 55%, rgba(2, 6, 23, 0.85) 100%),
+        linear-gradient(to bottom right, rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0.75));
       z-index: -1;
     }
 
-    main {
+    .app {
+      max-width: 980px;
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
     }
 
     .card {
-      width: 100%;
-      max-width: 680px;
-      border-radius: 1.5rem;
-      padding: 2rem 1.75rem;
-      background: radial-gradient(circle at top left, rgba(148,163,184,0.15), transparent 55%),
-                  radial-gradient(circle at bottom, rgba(15,118,110,0.22), transparent 60%),
-                  var(--glass);
-      border: 1px solid rgba(148,163,184,0.3);
-      box-shadow:
-        0 24px 80px rgba(15,23,42,0.9),
-        0 0 0 1px rgba(15,23,42,0.8);
+      background: var(--glass-bg);
+      border-radius: 1.8rem;
+      border: 1px solid var(--glass-border);
       backdrop-filter: blur(18px);
+      box-shadow:
+        0 24px 40px rgba(15, 23, 42, 0.7),
+        0 0 0 1px rgba(15, 23, 42, 0.4);
+      padding: 24px 20px 20px;
     }
 
-    @media (min-width: 640px) {
+    @media (min-width: 768px) {
       .card {
-        padding: 2.5rem 3rem;
+        padding: 30px 32px 24px;
       }
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .title-area {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.25rem 0.75rem;
+      gap: 8px;
+      padding: 4px 10px;
       border-radius: 999px;
-      background: rgba(15,23,42,0.75);
-      border: 1px solid rgba(148,163,184,0.5);
-      font-size: 0.75rem;
-      letter-spacing: 0.08em;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      font-size: 0.7rem;
       text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1.5rem;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
     }
 
     .badge-dot {
-      width: 7px;
-      height: 7px;
+      width: 8px;
+      height: 8px;
       border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 14px rgba(56,189,248,0.9);
+      background: var(--success);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
     }
 
-    h1 {
-      font-size: clamp(1.9rem, 3vw + 1rem, 2.6rem);
-      line-height: 1.1;
-      margin-bottom: 0.9rem;
+    .title {
+      font-size: clamp(1.5rem, 3vw, 1.9rem);
+      font-weight: 600;
       letter-spacing: -0.03em;
     }
 
-    h1 span {
-      background: linear-gradient(120deg, #38bdf8, #22c55e);
+    .title span.brand {
+      background: linear-gradient(135deg, #facc15, #22d3ee);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
 
     .subtitle {
-      font-size: 0.98rem;
-      line-height: 1.6;
-      color: var(--muted);
-      max-width: 34rem;
-      margin-bottom: 1.8rem;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      max-width: 440px;
     }
 
-    .info-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .info-pill {
+    .timer-pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.4rem 0.7rem;
+      gap: 8px;
+      padding: 8px 14px;
       border-radius: 999px;
-      background: rgba(15,23,42,0.8);
-      border: 1px solid rgba(148,163,184,0.4);
-    }
-
-    .info-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent);
-    }
-
-    .info-interval {
-      border-color: rgba(56,189,248,0.5);
-      background: var(--accent-soft);
-      color: #e0f2fe;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.9rem;
-      align-items: center;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 999px;
-      padding: 0.75rem 1.4rem;
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 500;
-      transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease, opacity 0.14s ease;
-      outline: none;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.65);
+      font-size: 0.76rem;
+      color: var(--text-muted);
       white-space: nowrap;
     }
 
-    .btn-primary {
-      background: radial-gradient(circle at top left, #38bdf8, #0ea5e9);
-      color: #0b1220;
-      box-shadow:
-        0 14px 38px rgba(8,47,73,0.9),
-        0 0 0 1px rgba(8, 47, 73,0.4);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 18px 60px rgba(8,47,73,1),
-        0 0 0 1px rgba(8, 47, 73,0.6);
-      filter: brightness(1.03);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-      box-shadow:
-        0 8px 24px rgba(8,47,73,0.9),
-        0 0 0 1px rgba(8, 47, 73,0.6);
-    }
-
-    .btn-ghost {
-      background: rgba(15,23,42,0.8);
-      color: var(--muted);
+    .timer-dot {
+      width: 10px;
+      height: 10px;
       border-radius: 999px;
-      padding: 0.7rem 1.1rem;
-      border: 1px solid rgba(148,163,184,0.5);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.9);
+      position: relative;
     }
 
-    .btn-ghost:hover {
-      background: rgba(15,23,42,0.92);
-      color: #e5e7eb;
-      transform: translateY(-1px);
+    .timer-dot::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      border: 1px solid rgba(250, 204, 21, 0.35);
     }
 
-    .btn-icon {
-      font-size: 1rem;
+    .layout {
+      display: grid;
+      gap: 20px;
     }
 
-    .status {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 0.4rem;
-      min-height: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 10px rgba(56,189,248,0.9);
-    }
-
-    .status-error {
-      color: #fecaca;
-    }
-
-    .status-error-dot {
-      background: #f97373;
-      box-shadow: 0 0 10px rgba(248,113,113,0.9);
-    }
-
-    @media (max-width: 480px) {
-      .card {
-        padding: 1.6rem 1.4rem;
-        border-radius: 1.2rem;
-      }
-      .badge {
-        margin-bottom: 1.2rem;
-      }
-      .actions {
-        flex-direction: column;
+    @media (min-width: 780px) {
+      .layout {
+        grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.2fr);
         align-items: stretch;
       }
-      .btn {
-        justify-content: center;
-        width: 100%;
-      }
+    }
+
+    .verse-card {
+      position: relative;
+      border-radius: 1.5rem;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 18px 18px 16px;
+      background:
+        radial-gradient(circle at top left, rgba(248, 250, 252, 0.12), transparent 60%),
+        rgba(15, 23, 42, 0.9);
+      overflow: hidden;
+    }
+
+    .verse-card::before {
+      content: "“";
+      position: absolute;
+      font-size: 7rem;
+      line-height: 1;
+      top: -40px;
+      left: 14px;
+      opacity: 0.08;
+    }
+
+    .verse-ref {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .version-tag {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .verse-text {
+      font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+      line-height: 1.8;
+      margin-bottom: 16px;
+      font-weight: 400;
+    }
+
+    .verse-helper {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .controls-card {
+      border-radius: 1.4rem;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: linear-gradient(
+        145deg,
+        rgba(15, 23, 42, 0.9),
+        rgba(15, 23, 42, 0.82)
+      );
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .progress-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .progress-sub {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-wrapper {
+      margin-top: 10px;
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #facc15, #22d3ee);
+      transition: width 0.3s linear;
+    }
+
+    .progress-footer {
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      font-size: 0.74rem;
+    }
+
+    .primary-button {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 0;
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: radial-gradient(circle at 0% 0%, #facc15, #f97316);
+      color: #111827;
+      cursor: pointer;
+      box-shadow:
+        0 12px 30px rgba(249, 115, 22, 0.55),
+        0 0 0 1px rgba(248, 250, 252, 0.06);
+      transition:
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out,
+        filter 0.12s ease-out;
+    }
+
+    .primary-button span.chevron {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      font-size: 0.8rem;
+    }
+
+    .primary-button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow:
+        0 18px 38px rgba(249, 115, 22, 0.7),
+        0 0 0 1px rgba(248, 250, 252, 0.08);
+    }
+
+    .primary-button:active {
+      transform: translateY(0);
+      box-shadow:
+        0 10px 24px rgba(249, 115, 22, 0.45),
+        0 0 0 1px rgba(248, 250, 252, 0.05);
+    }
+
+    .footer {
+      margin-top: 14px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    /* Animação suave */
+    .fade-enter {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    .fade-enter-active {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.22s ease-out, transform 0.22s ease-out;
     }
   </style>
+
 </head>
 
 <body>
-  <!-- Imagens de fundo -->
-  <div class="bg-image" id="bg-current"></div>
-  <div class="bg-image-next" id="bg-next"></div>
-  <div class="overlay"></div>
 
-  <main>
+  <!-- Fundo com paisagem carregada por API -->
+  <div class="bg-image" id="bgImage"></div>
+  <div class="bg-overlay"></div>
+
+  <main class="app">
     <section class="card">
-      <div class="badge">
-        <span class="badge-dot"></span>
-        <span>Paisagens aleatórias • via Unsplash</span>
-      </div>
-
-      <h1>
-        Deixe uma <span>nova paisagem</span> te encontrar a cada minuto.
-      </h1>
-
-      <p class="subtitle">
-        Este site troca o papel de parede em tempo real com fotos de paisagens do mundo todo.
-        Relaxe, respire fundo e deixe a tela se transformar sozinha — ou clique para pular direto
-        para a próxima vista.
-      </p>
-
-      <div class="info-row">
-        <div class="info-pill info-interval">
-          <span class="info-dot"></span>
-          <span>Auto-troca a cada 1 minuto</span>
+      <header class="header">
+        <div class="title-area">
+          <div class="badge">
+            <span class="badge-dot"></span>
+            <span>Devocional • Versos ACF</span>
+          </div>
+          <h1 class="title">
+            Versos em
+            <span class="brand">foco</span>
+          </h1>
+          <p class="subtitle">
+            Um versículo por vez, sobre uma paisagem tranquila,
+            para você respirar, meditar e conversar com Deus.
+          </p>
         </div>
-        <div class="info-pill">
-          <span class="info-dot"></span>
-          <span>Imagens em alta resolução</span>
-        </div>
-        <div class="info-pill">
-          <span class="info-dot"></span>
-          <span>Carregamento suave com fade</span>
-        </div>
-      </div>
 
-      <div class="actions">
-        <button class="btn btn-primary" id="btn-next">
-          <span class="btn-icon">⟳</span>
-          <span>Próxima paisagem agora</span>
-        </button>
-        <button class="btn btn-ghost" id="btn-pause">
-          <span class="btn-icon">⏸</span>
-          <span>Pause automático</span>
-        </button>
-      </div>
+        <div class="timer-pill">
+          <div class="timer-dot"></div>
+          <span>
+            Próxima troca em <strong id="countdown">60s</strong>
+          </span>
+        </div>
+      </header>
 
-      <div class="status" id="status">
-        <span class="status-dot" id="status-dot"></span>
-        <span id="status-text">Carregando primeira paisagem...</span>
-      </div>
+      <section class="layout">
+        <article class="verse-card">
+          <div class="verse-ref" id="verseRef">
+            <span>Preparando o primeiro versículo…</span>
+            <span class="version-tag">ACF</span>
+          </div>
+
+          <p class="verse-text" id="verseText">
+            Carregando devocional de hoje…
+          </p>
+
+          <p class="verse-helper">
+            Quando o versículo aparecer, respire fundo, leia sem pressa
+            e use a paisagem ao fundo como cenário para a sua oração.
+          </p>
+        </article>
+
+        <aside class="controls-card">
+          <div>
+            <p class="progress-title">Sessão de leitura</p>
+            <p class="progress-sub">
+              Versículos exibidos hoje:
+              <strong id="currentIndexLabel">0</strong>
+            </p>
+
+            <div class="progress-bar-wrapper">
+              <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="progress-footer">
+              <span>Próxima troca em <strong id="countdownInline">60s</strong></span>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="stat-pill">
+                  <span id="readCount">0</span> lidos
+                </span>
+                <span class="stat-pill" id="loopIndicator">
+                  Começando agora ✨
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <button class="primary-button" id="nextButton" type="button">
+            <span>Próximo versículo</span>
+            <span class="chevron">➜</span>
+          </button>
+        </aside>
+      </section>
+
+      <footer class="footer">
+        <div class="chips">
+          <span class="chip">Versos ACF locais</span>
+          <span class="chip">Paisagem aleatória</span>
+          <span class="chip">Auto a cada 1 min</span>
+        </div>
+        <span>Use sua Bíblia ACF para ler o contexto completo de cada verso.</span>
+      </footer>
     </section>
   </main>
 
   <script>
-    (function () {
-      const currentBg = document.getElementById("bg-current");
-      const nextBg = document.getElementById("bg-next");
-      const statusText = document.getElementById("status-text");
-      const statusDot = document.getElementById("status-dot");
-      const btnNext = document.getElementById("btn-next");
-      const btnPause = document.getElementById("btn-pause");
+    // =========================
+    // CONFIGURAÇÕES
+    // =========================
+    var INTERVAL_MS = 60000; // 1 minuto
 
-      const INTERVAL_MS = 60_000; // 1 minuto
-      const UNSPLASH_URL = "https://source.unsplash.com/random/1600x900/?landscape";
+    // Paisagens: picsum.photos (placeholder com blur)
+    var LANDSCAPE_URL_BASE = "https://picsum.photos/1600/900?blur=1&random=";
 
-      let intervalId = null;
-      let isPaused = false;
-      let isFirstImage = true;
-
-      function setStatus(message, isError = false) {
-        statusText.textContent = message;
-
-        if (isError) {
-          statusText.classList.add("status-error");
-          statusDot.classList.add("status-error-dot");
-        } else {
-          statusText.classList.remove("status-error");
-          statusDot.classList.remove("status-error-dot");
-        }
+    // Versos ACF locais (texto completo no próprio front)
+    var VERSES = [
+      {
+        reference: "Salmos 23:1 (ACF)",
+        text: "O Senhor é o meu pastor; nada me faltará."
+      },
+      {
+        reference: "Filipenses 4:6 (ACF)",
+        text: "Não andeis ansiosos por coisa alguma; em tudo, porém, sejam conhecidas diante de Deus as vossas petições, pela oração e súplica, com ações de graças."
+      },
+      {
+        reference: "Romanos 8:28 (ACF)",
+        text: "E sabemos que todas as coisas contribuem juntamente para o bem daqueles que amam a Deus, daqueles que são chamados por seu decreto."
+      },
+      {
+        reference: "Isaías 41:10 (ACF)",
+        text: "Não temas, porque eu sou contigo; não te assombres, porque eu sou o teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destra da minha justiça."
+      },
+      {
+        reference: "João 3:16 (ACF)",
+        text: "Porque Deus amou o mundo de tal maneira que deu o seu Filho unigênito, para que todo aquele que nele crê não pereça, mas tenha a vida eterna."
+      },
+      {
+        reference: "Mateus 11:28 (ACF)",
+        text: "Vinde a mim, todos os que estais cansados e oprimidos, e eu vos aliviarei."
+      },
+      {
+        reference: "Josué 1:9 (ACF)",
+        text: "Não to mandei eu? Esforça-te, e tem bom ânimo; não temas, nem te espantes; porque o Senhor, teu Deus, é contigo, por onde quer que andares."
+      },
+      {
+        reference: "Provérbios 3:5 (ACF)",
+        text: "Confia no Senhor de todo o teu coração e não te estribes no teu próprio entendimento."
+      },
+      {
+        reference: "Romanos 12:12 (ACF)",
+        text: "Alegrai-vos na esperança, sede pacientes na tribulação, perseverai na oração."
+      },
+      {
+        reference: "Salmos 46:1 (ACF)",
+        text: "Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia."
+      },
+      {
+        reference: "Salmos 121:1-2 (ACF)",
+        text: "Levantarei os meus olhos para os montes, de onde vem o meu socorro. O meu socorro vem do Senhor, que fez o céu e a terra."
+      },
+      {
+        reference: "2 Coríntios 12:9 (ACF)",
+        text: "A minha graça te basta, porque o meu poder se aperfeiçoa na fraqueza."
       }
+    ];
 
-      function buildImageUrl() {
-        // sig evita cache do navegador
-        return `${UNSPLASH_URL}&sig=${Date.now()}`;
-      }
+    // Estado
+    var remainingMs = INTERVAL_MS;
+    var timerId = null;
+    var readCount = 0;
+    var isLoadingVerse = false;
 
-      function swapBackgrounds(newUrl) {
-        nextBg.style.backgroundImage = `url("${newUrl}")`;
-        nextBg.style.opacity = "1";
+    // Elementos
+    var verseRefEl = document.getElementById("verseRef");
+    var verseTextEl = document.getElementById("verseText");
+    var countdownEl = document.getElementById("countdown");
+    var countdownInlineEl = document.getElementById("countdownInline");
+    var progressBarEl = document.getElementById("progressBar");
+    var currentIndexLabelEl = document.getElementById("currentIndexLabel");
+    var readCountEl = document.getElementById("readCount");
+    var loopIndicatorEl = document.getElementById("loopIndicator");
+    var nextButton = document.getElementById("nextButton");
+    var bgImageEl = document.getElementById("bgImage");
 
-        // Depois do fade, troca as camadas
-        setTimeout(() => {
-          currentBg.style.backgroundImage = `url("${newUrl}")`;
-          nextBg.style.opacity = "0";
-        }, 1000);
-      }
+    // =========================
+    // FUNÇÕES AUXILIARES
+    // =========================
+    function formatSeconds(ms) {
+      var sec = Math.ceil(ms / 1000);
+      return sec + "s";
+    }
 
-      function loadNewLandscape(isAuto = false) {
-        const img = new Image();
-        const url = buildImageUrl();
+    function updateCountdown() {
+      var value = formatSeconds(remainingMs);
+      countdownEl.textContent = value;
+      countdownInlineEl.textContent = value;
+      var percentage = 100 - (remainingMs / INTERVAL_MS) * 100;
+      progressBarEl.style.width = percentage + "%";
+    }
 
-        if (isAuto) {
-          setStatus("Trocando paisagem automaticamente...");
-        } else {
-          setStatus("Carregando nova paisagem...");
-        }
-
-        img.onload = function () {
-          swapBackgrounds(url);
-          if (isFirstImage) {
-            setStatus("Paisagem carregada. A próxima troca acontece em 1 minuto.");
-            isFirstImage = false;
-          } else if (isAuto) {
-            setStatus("Paisagem atualizada automaticamente.");
-          } else {
-            setStatus("Paisagem atualizada.");
-          }
-        };
-
-        img.onerror = function () {
-          setStatus("Não foi possível carregar a imagem agora. Tentando novamente em instantes.", true);
-        };
-
-        img.src = url;
-      }
-
-      function startInterval() {
-        if (intervalId !== null) return;
-        intervalId = setInterval(() => loadNewLandscape(true), INTERVAL_MS);
-      }
-
-      function clearIntervalIfNeeded() {
-        if (intervalId !== null) {
-          clearInterval(intervalId);
-          intervalId = null;
-        }
-      }
-
-      function togglePause() {
-        isPaused = !isPaused;
-
-        if (isPaused) {
-          clearIntervalIfNeeded();
-          btnPause.innerHTML = '<span class="btn-icon">▶</span><span>Retomar automático</span>';
-          setStatus("Trocas automáticas pausadas. Você pode mudar manualmente.");
-        } else {
-          startInterval();
-          btnPause.innerHTML = '<span class="btn-icon">⏸</span><span>Pause automático</span>';
-          setStatus("Trocas automáticas reativadas. Próxima em até 1 minuto.");
-        }
-      }
-
-      btnNext.addEventListener("click", () => {
-        loadNewLandscape(false);
+    function setFadeAnimation() {
+      verseTextEl.classList.remove("fade-enter", "fade-enter-active");
+      void verseTextEl.offsetWidth; // força reflow
+      verseTextEl.classList.add("fade-enter");
+      requestAnimationFrame(function () {
+        verseTextEl.classList.add("fade-enter-active");
       });
+    }
 
-      btnPause.addEventListener("click", togglePause);
+    function refreshBackground() {
+      var url = LANDSCAPE_URL_BASE + Date.now();
+      var img = new Image();
+      img.onload = function () {
+        bgImageEl.style.backgroundImage = 'url("' + url + '")';
+      };
+      img.onerror = function () {
+        console.warn("Falha ao carregar imagem de fundo");
+      };
+      img.src = url;
+    }
 
-      // Inicia
-      loadNewLandscape(false);
-      startInterval();
+    function getRandomVerse() {
+      var index = Math.floor(Math.random() * VERSES.length);
+      return VERSES[index];
+    }
+
+    function loadAndShowNewVerse() {
+      if (isLoadingVerse) return;
+      isLoadingVerse = true;
+
+      verseRefEl.innerHTML = '\
+        <span>Carregando versículo…</span>\
+        <span class="version-tag">ACF</span>\
+      ';
+      verseTextEl.textContent = "Buscando versículo para hoje…";
+
+      try {
+        var verse = getRandomVerse();
+
+        verseRefEl.innerHTML = '\
+          <span>' + verse.reference + '</span>\
+          <span class="version-tag">ACF</span>\
+        ';
+        verseTextEl.textContent = verse.text;
+
+        readCount++;
+        readCountEl.textContent = String(readCount);
+        currentIndexLabelEl.textContent = String(readCount);
+
+        if (readCount === 1) {
+          loopIndicatorEl.textContent = "Primeiro passo do dia 🙌";
+        } else if (readCount >= 5 && readCount < 15) {
+          loopIndicatorEl.textContent = "Ritmo bom de meditação 💛";
+        } else if (readCount >= 15) {
+          loopIndicatorEl.textContent = "Sessão profunda de leitura 🔥";
+        }
+
+        setFadeAnimation();
+        refreshBackground();
+      } catch (err) {
+        console.error(err);
+        verseRefEl.innerHTML = '\
+          <span>Erro ao carregar</span>\
+          <span class="version-tag">ACF</span>\
+        ';
+        verseTextEl.textContent =
+          "Não foi possível carregar o versículo agora. Tente novamente em alguns instantes.";
+      } finally {
+        isLoadingVerse = false;
+      }
+    }
+
+    function startTimer() {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+      remainingMs = INTERVAL_MS;
+      updateCountdown();
+
+      timerId = setInterval(function () {
+        remainingMs -= 1000;
+        if (remainingMs <= 0) {
+          remainingMs = INTERVAL_MS;
+          updateCountdown();
+          loadAndShowNewVerse();
+        } else {
+          updateCountdown();
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      remainingMs = INTERVAL_MS;
+      updateCountdown();
+    }
+
+    // =========================
+    // INICIALIZAÇÃO
+    // =========================
+    (function init() {
+      refreshBackground();
+      loadAndShowNewVerse();
+      startTimer();
     })();
+
+    nextButton.addEventListener("click", function () {
+      resetTimer();
+      loadAndShowNewVerse();
+    });
   </script>
 </body>
+
 </html>
