@@ -5,161 +5,642 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Versículos ACF - Meditação</title>
 
+  <!-- Fonte Google -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
 
   <style>
-    body {
-      background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #000 100%);
-      min-height: 100vh;
+    :root {
+      --bg-gradient: radial-gradient(circle at top, #1e293b 0, #020617 45%, #000000 100%);
+      --card-bg: rgba(15, 23, 42, 0.92);
+      --accent: #facc15;
+      --accent-soft: rgba(250, 204, 21, 0.12);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-soft: rgba(148, 163, 184, 0.35);
+      --shadow-soft: 0 22px 45px rgba(15, 23, 42, 0.9);
+      --radius-xl: 1.5rem;
+      --radius-lg: 999px;
+      --glass: rgba(15, 23, 42, 0.72);
+      --success: #22c55e;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: "Poppins", sans-serif;
-      color: #e5e7eb;
-      padding: 20px;
-    }
-    .container {
-      max-width: 900px;
-      width: 100%;
-      background: rgba(15, 23, 42, 0.85);
       padding: 24px;
-      border-radius: 20px;
-      border: 1px solid rgba(148,163,184,0.35);
-      backdrop-filter: blur(8px);
     }
-    h1 {
+
+    .app {
+      max-width: 960px;
+      width: 100%;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 2rem;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 28px 24px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 32px 36px 28px;
+      }
+    }
+
+    .glow {
+      position: absolute;
+      inset: -40%;
+      opacity: 0.16;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(250, 204, 21, 0.32) 0, transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(56, 189, 248, 0.22) 0, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title-area {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--success);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+    }
+
+    .title {
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
       font-weight: 600;
       letter-spacing: -0.03em;
-      margin-bottom: 4px;
-      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
-    .sub {
-      color: #9ca3af;
-      margin-bottom: 24px;
-      font-size: 0.9rem;
+
+    .title span.brand {
+      background: linear-gradient(135deg, #facc15, #22d3ee);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
-    .verse-ref {
-      background: rgba(15,23,42,0.7);
-      display: inline-block;
-      padding: 6px 12px;
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 420px;
+    }
+
+    .timer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--radius-lg);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .timer-dot {
+      width: 10px;
+      height: 10px;
       border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.9);
+      position: relative;
+    }
+
+    .timer-dot::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      border: 1px solid rgba(250, 204, 21, 0.35);
+    }
+
+    .layout {
+      display: grid;
+      gap: 22px;
+    }
+
+    @media (min-width: 768px) {
+      .layout {
+        grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.1fr);
+        align-items: stretch;
+      }
+    }
+
+    .verse-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.90));
+      border-radius: 1.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 20px 20px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .verse-card::before {
+      content: "“";
+      position: absolute;
+      font-size: 7rem;
+      line-height: 1;
+      top: -46px;
+      left: 18px;
+      opacity: 0.04;
+    }
+
+    .verse-ref {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
       font-size: 0.78rem;
-      border: 1px solid rgba(148,163,184,0.45);
-      color: #9ca3af;
+      color: var(--text-muted);
       margin-bottom: 12px;
     }
-    .verse-text {
-      font-size: 1.35rem;
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    button {
-      width: 100%;
-      border: none;
-      padding: 12px 0;
+
+    .version-tag {
+      font-size: 0.68rem;
+      padding: 2px 7px;
       border-radius: 999px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      background: radial-gradient(circle at 0% 0%, #facc15, #f97316);
-      color: #111;
-      margin-top: 16px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
     }
-    .timer {
-      color: #9ca3af;
+
+    .verse-text {
+      font-size: clamp(1.1rem, 2.1vw, 1.35rem);
+      line-height: 1.6;
+      margin-bottom: 14px;
+      font-weight: 400;
+    }
+
+    .verse-helper {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .controls-card {
+      background: var(--glass);
+      border-radius: 1.6rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: space-between;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .progress-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .progress-title {
       font-size: 0.85rem;
-      margin-top: 10px;
-      text-align: right;
+      font-weight: 500;
     }
+
+    .progress-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-wrapper {
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #facc15, #22d3ee);
+      transition: width 0.3s linear;
+    }
+
+    .progress-badges {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .stats {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      font-size: 0.74rem;
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .primary-button {
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-radius: 999px;
+      border: none;
+      width: 100%;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: radial-gradient(circle at 0% 0%, #facc15, #f97316);
+      color: #111827;
+      cursor: pointer;
+      box-shadow:
+        0 10px 30px rgba(249, 115, 22, 0.45),
+        0 0 0 1px rgba(248, 250, 252, 0.08);
+      transition:
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out,
+        filter 0.12s ease-out;
+    }
+
+    .primary-button span.chevron {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.26);
+      font-size: 0.8rem;
+    }
+
+    .primary-button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow:
+        0 16px 40px rgba(249, 115, 22, 0.6),
+        0 0 0 1px rgba(248, 250, 252, 0.1);
+    }
+
+    .primary-button:active {
+      transform: translateY(0);
+      box-shadow:
+        0 10px 22px rgba(249, 115, 22, 0.4),
+        0 0 0 1px rgba(248, 250, 252, 0.08);
+    }
+
+    .footer {
+      margin-top: 14px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
     .fade-enter {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(6px);
     }
+
     .fade-enter-active {
       opacity: 1;
       transform: translateY(0);
-      transition: all 0.25s ease-out;
+      transition: opacity 0.22s ease-out, transform 0.22s ease-out;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Versos <span style="background: linear-gradient(135deg,#facc15,#22d3ee); -webkit-background-clip:text; color:transparent;">ACF</span></h1>
-    <p class="sub">Versículos carregados automaticamente pela internet.</p>
+  <main class="app">
+    <section class="card">
+      <div class="glow"></div>
 
-    <div class="verse-ref" id="verseRef">Carregando referência…</div>
-    <div class="verse-text" id="verseText">Carregando versículo…</div>
+      <div class="card-inner">
+        <header class="header">
+          <div class="title-area">
+            <div class="badge">
+              <span class="badge-dot"></span>
+              <span>Leitura guiada • Diário</span>
+            </div>
+            <h1 class="title">
+              Versos
+              <span class="brand">ACF</span>
+              em foco
+            </h1>
+            <p class="subtitle">
+              Um versículo por vez, para você respirar fundo, ler com calma
+              e deixar a Palavra de Deus falar com você.
+            </p>
+          </div>
 
-    <button id="nextBtn">Próximo versículo</button>
-    <div class="timer">Troca automática em <strong id="countdown">60s</strong></div>
-  </div>
+          <div class="timer-pill">
+            <div class="timer-dot"></div>
+            <span>
+              Troca automática em
+              <strong id="countdown">60s</strong>
+            </span>
+          </div>
+        </header>
+
+        <section class="layout">
+          <article class="verse-card">
+            <div class="verse-ref" id="verseRef">
+              <span>Carregando referência…</span>
+              <span class="version-tag">ACF</span>
+            </div>
+
+            <p class="verse-text" id="verseText">
+              Carregando versículo online…
+            </p>
+
+            <p class="verse-helper">
+              Use esse minuto para meditar, orar em cima do texto
+              e deixar ele descer do intelecto para o coração.
+            </p>
+          </article>
+
+          <aside class="controls-card">
+            <div>
+              <div class="progress-row">
+                <div class="progress-labels">
+                  <span class="progress-title">
+                    Sessão de meditação
+                  </span>
+                  <span class="progress-subtitle">
+                    Versículos exibidos: <span id="currentIndexLabel">0</span> (<span id="totalVersesLabel">online</span>)
+                  </span>
+                </div>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="progress-bar-wrapper">
+                  <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-badges">
+                  <span style="font-size: 0.72rem;">
+                    Próxima troca em <strong id="countdownInline">60s</strong>
+                  </span>
+                  <div class="stats">
+                    <span class="stat-pill">
+                      <span id="readCount">0</span> lidos hoje
+                    </span>
+                    <span class="stat-pill">
+                      <span id="loopIndicator">Começando agora ✨</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button class="primary-button" id="nextButton" type="button">
+              <span>Próximo versículo</span>
+              <span class="chevron">➜</span>
+            </button>
+          </aside>
+        </section>
+
+        <footer class="footer">
+          <div class="chips">
+            <span class="chip">1 min por verso</span>
+            <span class="chip">Versão ACF via API</span>
+            <span class="chip">Atualização online</span>
+          </div>
+          <div>
+            <span>Conteúdo fornecido pela API ABíbliaDigital.</span>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
 
   <script>
-    let verses = [];
-    let currentIndex = 0;
+    // API pública ABíbliaDigital – versão ACF (random)
+    const API_URL = "https://www.abibliadigital.com.br/api/verses/acf/random";
+    const API_HEADERS = {
+      Authorization: "Bearer free" // token público gratuito
+    };
 
-    const INTERVAL_MS = 60000; // 1 minuto
-    let remaining = INTERVAL_MS;
+    const INTERVAL_MS = 60_000; // 1 minuto
+    let remainingMs = INTERVAL_MS;
+    let timerId = null;
+    let readCount = 0;
+    let isLoading = false;
 
+    // Elementos
     const verseRefEl = document.getElementById("verseRef");
     const verseTextEl = document.getElementById("verseText");
     const countdownEl = document.getElementById("countdown");
-    const nextBtn = document.getElementById("nextBtn");
+    const countdownInlineEl = document.getElementById("countdownInline");
+    const progressBarEl = document.getElementById("progressBar");
+    const currentIndexLabelEl = document.getElementById("currentIndexLabel");
+    const totalVersesLabelEl = document.getElementById("totalVersesLabel");
+    const readCountEl = document.getElementById("readCount");
+    const loopIndicatorEl = document.getElementById("loopIndicator");
+    const nextButton = document.getElementById("nextButton");
 
-    async function loadVerses() {
-      try {
-        const res = await fetch("https://SEU-ENDPOINT/versiculos"); 
-        verses = await res.json();
+    totalVersesLabelEl.textContent = "online";
 
-        if (!Array.isArray(verses) || verses.length === 0) {
-          verseTextEl.textContent = "Nenhum versículo encontrado.";
-          return;
-        }
-
-        showVerse(0);
-        startTimer();
-      } catch (e) {
-        verseTextEl.textContent = "Erro ao carregar versículos online.";
-        console.error(e);
-      }
+    function formatSeconds(ms) {
+      const sec = Math.ceil(ms / 1000);
+      return `${sec}s`;
     }
 
-    function showVerse(i) {
-      const v = verses[i];
-      if (!v) return;
+    function updateCountdown() {
+      const value = formatSeconds(remainingMs);
+      countdownEl.textContent = value;
+      countdownInlineEl.textContent = value;
+      const percentage = 100 - (remainingMs / INTERVAL_MS) * 100;
+      progressBarEl.style.width = `${percentage}%`;
+    }
 
-      verseRefEl.textContent = `${v.ref} — ACF`;
-      verseTextEl.textContent = v.text;
-
+    function setFadeAnimation() {
       verseTextEl.classList.remove("fade-enter", "fade-enter-active");
       void verseTextEl.offsetWidth;
       verseTextEl.classList.add("fade-enter");
-      requestAnimationFrame(() => verseTextEl.classList.add("fade-enter-active"));
+      requestAnimationFrame(() => {
+        verseTextEl.classList.add("fade-enter-active");
+      });
     }
 
-    function nextVerse() {
-      currentIndex = (currentIndex + 1) % verses.length;
-      showVerse(currentIndex);
-      remaining = INTERVAL_MS;
+    async function fetchRandomVerse() {
+      const res = await fetch(API_URL, { headers: API_HEADERS });
+      if (!res.ok) {
+        throw new Error("Erro ao buscar versículo");
+      }
+      return res.json();
+    }
+
+    async function loadAndShowNewVerse() {
+      if (isLoading) return;
+      isLoading = true;
+
+      verseRefEl.innerHTML = `
+        <span>Carregando referência…</span>
+        <span class="version-tag">ACF</span>
+      `;
+      verseTextEl.textContent = "Carregando versículo online…";
+
+      try {
+        const data = await fetchRandomVerse();
+        // Estrutura esperada: { book: { name }, chapter, number, text } :contentReference[oaicite:1]{index=1}
+
+        const refString = `${data.book.name} ${data.chapter}:${data.number}`;
+        verseRefEl.innerHTML = `
+          <span>${refString}</span>
+          <span class="version-tag">ACF</span>
+        `;
+        verseTextEl.textContent = data.text || "Versículo recebido, mas sem texto.";
+
+        readCount++;
+        readCountEl.textContent = readCount.toString();
+        currentIndexLabelEl.textContent = readCount.toString();
+
+        if (readCount === 1) {
+          loopIndicatorEl.textContent = "Primeiros passos 🙌";
+        } else if (readCount >= 5 && readCount < 15) {
+          loopIndicatorEl.textContent = "Ritmo de meditação 💛";
+        } else if (readCount >= 15) {
+          loopIndicatorEl.textContent = "Maratona bíblica 🔥";
+        }
+
+        setFadeAnimation();
+      } catch (err) {
+        console.error(err);
+        verseRefEl.innerHTML = `
+          <span>Erro ao carregar</span>
+          <span class="version-tag">ACF</span>
+        `;
+        verseTextEl.textContent =
+          "Não foi possível buscar o versículo agora. Verifique sua conexão ou tente novamente em instantes.";
+      } finally {
+        isLoading = false;
+      }
     }
 
     function startTimer() {
-      setInterval(() => {
-        remaining -= 1000;
-        if (remaining <= 0) {
-          nextVerse();
-          remaining = INTERVAL_MS;
+      if (timerId) {
+        clearInterval(timerId);
+      }
+      remainingMs = INTERVAL_MS;
+      updateCountdown();
+
+      timerId = setInterval(() => {
+        remainingMs -= 1000;
+        if (remainingMs <= 0) {
+          remainingMs = INTERVAL_MS;
+          updateCountdown();
+          loadAndShowNewVerse();
+        } else {
+          updateCountdown();
         }
-        countdownEl.textContent = Math.ceil(remaining / 1000) + "s";
       }, 1000);
     }
 
-    nextBtn.addEventListener("click", nextVerse);
+    function resetTimer() {
+      remainingMs = INTERVAL_MS;
+      updateCountdown();
+    }
 
-    loadVerses();
+    // Inicializa
+    (async function init() {
+      await loadAndShowNewVerse();
+      startTimer();
+    })();
+
+    // Clique manual
+    nextButton.addEventListener("click", async () => {
+      resetTimer();
+      await loadAndShowNewVerse();
+    });
   </script>
 </body>
 </html>
