@@ -1,882 +1,650 @@
-<!doctype html> 
+<!doctype html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cartão pra Gabi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Versículos ACF - Meditação</title>
+
+  <!-- Fonte Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
 
   <style>
-    :root{
-      --bg:#0f1724;
-      --card:#0b1220;
-      --accent:#f7c948;
-      --muted:#94a3b8;
-      --glass:rgba(255,255,255,0.04)
+    :root {
+      --bg-gradient: radial-gradient(circle at top, #1e293b 0, #020617 45%, #000000 100%);
+      --card-bg: rgba(15, 23, 42, 0.92);
+      --accent: #facc15;
+      --accent-soft: rgba(250, 204, 21, 0.12);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-soft: rgba(148, 163, 184, 0.35);
+      --shadow-soft: 0 22px 45px rgba(15, 23, 42, 0.9);
+      --radius-xl: 1.5rem;
+      --radius-lg: 999px;
+      --glass: rgba(15, 23, 42, 0.72);
+      --success: #22c55e;
     }
 
-    html,body{
-      height:100%;
-      margin:0;
-      font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-      background: linear-gradient(180deg,#071327 0%, #081827 100%);
-      color:#e6eef8
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    .wrap{
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:24px
+    body {
+      min-height: 100vh;
+      font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
 
-    .card{
-      width:100%;
-      max-width:420px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:16px;
-      padding:18px;
-      box-shadow:0 6px 30px rgba(2,6,23,0.6);
-      backdrop-filter:blur(6px);
-      position:relative;
-      overflow:hidden
+    .app {
+      max-width: 960px;
+      width: 100%;
     }
 
-    h1{margin:0 0 6px 0;font-size:20px}
-    p.lead{color:var(--muted);margin:0 0 14px 0}
-
-    .big-heart{display:flex;align-items:center;gap:12px}
-    .heart{
-      width:56px;height:56px;border-radius:50%;
-      background:linear-gradient(135deg,#ff9fb1,#ff6b81);
-      display:flex;align-items:center;justify-content:center;
-      box-shadow:0 6px 20px rgba(255,107,129,0.18);
-      cursor:pointer;
-      transition:transform .18s ease, box-shadow .18s ease;
-      flex:0 0 auto
-    }
-    .heart:active{transform:scale(0.96)}
-    .heart.pulse{transform:scale(1.08);box-shadow:0 12px 28px rgba(255,107,129,0.22)}
-    .heart svg{width:28px;height:28px;filter:drop-shadow(0 3px 8px rgba(255,107,129,0.25))}
-
-    .preview{
-      margin-top:14px;
-      background:rgba(255,255,255,0.02);
-      padding:12px;
-      border-radius:12px
+    .card {
+      background: var(--card-bg);
+      border-radius: 2rem;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 28px 24px 24px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .reveal{
-      margin-top:14px;
-      padding:12px;
-      border-radius:12px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
-      display:none;
-      opacity:0;
-      transform:translateY(10px);
-      transition:opacity .6s ease, transform .6s ease;
-      position:relative
+    @media (min-width: 768px) {
+      .card {
+        padding: 32px 36px 28px;
+      }
     }
 
-    .small{font-size:13px;color:var(--muted)}
-
-    .confetti-canvas{
-      position:fixed;
-      left:0;top:0;
-      pointer-events:none;
-      width:100%;height:100%
+    /* Detalhes de glow no fundo */
+    .glow {
+      position: absolute;
+      inset: -40%;
+      opacity: 0.16;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(250, 204, 21, 0.32) 0, transparent 55%),
+        radial-gradient(circle at 90% 100%, rgba(56, 189, 248, 0.22) 0, transparent 55%);
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .footer{
-      margin-top:14px;
-      font-size:13px;
-      color:var(--muted);
-      text-align:center
+    .card-inner {
+      position: relative;
+      z-index: 1;
     }
 
-    .typing-cursor{
-      display:inline-block;
-      width:8px;height:18px;
-      background:linear-gradient(180deg,#e6eef8,#cfdff0);
-      margin-left:4px;vertical-align:bottom;
-      animation:blink 1s steps(2) infinite
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
     }
-    @keyframes blink{50%{opacity:0}}
 
-    /* spark styles */
-    .spark {
-      position:absolute;
-      width:8px;height:8px;
-      border-radius:50%;
-      pointer-events:none;
-      transform: translate(-50%,-50%) scale(1);
-      opacity:1;
-      will-change: transform, opacity;
-      animation: spark-move 700ms cubic-bezier(.2,.9,.2,1) forwards;
-      mix-blend-mode:screen
+    .title-area {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
-    @keyframes spark-move {
-      0% { transform: translate(-50%,-50%) translate(0,0) scale(1); opacity:1 }
-      100% { transform: translate(-50%,-50%) translate(var(--tx), var(--ty)) scale(.3); opacity:0 }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
     }
-    .spark-ring { box-shadow: 0 0 6px rgba(255,255,255,0.12) inset; }
 
-    /* --- JOGO ARCO + ALVOS --- */
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--success);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+    }
 
-    .archery-wrapper{
-      margin-top:16px;
-      padding:10px 10px 12px;
-      border-radius:14px;
-      background:radial-gradient(circle at top, rgba(148,163,184,0.22) 0%, rgba(15,23,42,0.85) 40%, rgba(2,6,23,0.98) 100%);
+    .title {
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .title span.brand {
+      background: linear-gradient(135deg, #facc15, #22d3ee);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      max-width: 420px;
+    }
+
+    .timer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--radius-lg);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .timer-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent);
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.9);
+      position: relative;
+    }
+
+    .timer-dot::after {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: inherit;
+      border: 1px solid rgba(250, 204, 21, 0.35);
+    }
+
+    .layout {
+      display: grid;
+      gap: 22px;
+    }
+
+    @media (min-width: 768px) {
+      .layout {
+        grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.1fr);
+        align-items: stretch;
+      }
+    }
+
+    .verse-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.90));
+      border-radius: 1.8rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 20px 20px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .verse-card::before {
+      content: "“";
+      position: absolute;
+      font-size: 7rem;
+      line-height: 1;
+      top: -46px;
+      left: 18px;
+      opacity: 0.04;
+    }
+
+    .verse-ref {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .version-tag {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .verse-text {
+      font-size: clamp(1.1rem, 2.1vw, 1.35rem);
+      line-height: 1.6;
+      margin-bottom: 14px;
+      font-weight: 400;
+    }
+
+    .verse-helper {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .controls-card {
+      background: var(--glass);
+      border-radius: 1.6rem;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: space-between;
+    }
+
+    .progress-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .progress-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .progress-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .progress-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-wrapper {
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #facc15, #22d3ee);
+      transition: width 0.3s linear;
+    }
+
+    .progress-badges {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .stats {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      font-size: 0.74rem;
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .primary-button {
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-radius: 999px;
+      border: none;
+      width: 100%;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: radial-gradient(circle at 0% 0%, #facc15, #f97316);
+      color: #111827;
+      cursor: pointer;
       box-shadow:
-        0 16px 40px rgba(15,23,42,0.7),
-        inset 0 0 30px rgba(15,23,42,0.8);
-      border:1px solid rgba(148,163,184,0.25);
-      position:relative;
-      overflow:hidden;
+        0 10px 30px rgba(249, 115, 22, 0.45),
+        0 0 0 1px rgba(248, 250, 252, 0.08);
+      transition:
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out,
+        filter 0.12s ease-out;
     }
 
-    .archery-header{
-      font-size:13px;
-      color:var(--muted);
-      margin-bottom:8px;
+    .primary-button span.chevron {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.26);
+      font-size: 0.8rem;
     }
 
-    .archery-question{
-      font-size:14px;
-      font-weight:600;
-      color:#e2e8f0;
+    .primary-button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow:
+        0 16px 40px rgba(249, 115, 22, 0.6),
+        0 0 0 1px rgba(248, 250, 252, 0.1);
     }
 
-    .archery-hint{
-      font-size:12px;
-      margin-top:4px;
-      opacity:0.9;
+    .primary-button:active {
+      transform: translateY(0);
+      box-shadow:
+        0 10px 22px rgba(249, 115, 22, 0.4),
+        0 0 0 1px rgba(248, 250, 252, 0.08);
     }
 
-    #archery-canvas{
-      width:100%;
-      max-width:340px;
-      border-radius:12px;
-      display:block;
-      background:linear-gradient(180deg,#020617 0%,#02081f 55%,#020617 100%);
-      box-shadow:0 6px 18px rgba(15,23,42,0.8);
-      touch-action:none;
+    .footer {
+      margin-top: 14px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
-    #game-message{
-      margin-top:10px;
-      font-size:13px;
-      min-height:32px;
-      line-height:1.4;
-      color:#e5e9f5;
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
-    @media (min-width:600px){
-      .card{padding:26px}
+    .chip {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Animação suave de troca */
+    .fade-enter {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    .fade-enter-active {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.22s ease-out, transform 0.22s ease-out;
     }
   </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <div class="card" role="main" aria-live="polite">
+  <main class="app">
+    <section class="card">
+      <div class="glow"></div>
 
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <h1 id="title">Boa tarde, Gabi ✨</h1>
-          <p class="lead">Para esse dia especial <br> na sua vida</p>
-        </div>
-        <div class="big-heart">
-          <div class="heart" id="heart" title="Abrir" role="button" aria-pressed="false">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 21s-7-4.35-9-7.36C-0.08 7.78 6 3 12 8c6-5 12.08-0.22 9 5.64C19 16.65 12 21 12 21z" fill="white" opacity="0.95"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <div class="preview" id="preview">
-        <div class="small">Toque no coração pra abrir uma mensagem</div>
-      </div>
-
-      <div class="reveal" id="reveal" aria-hidden="true">
-        <div id="verse" style="font-weight:600">JOÃO 15:9</div>
-        <div id="quote" style="margin-top:8px;font-weight:500">
-          “Assim como o Pai me amou, também Eu amei vocês. Permaneçam no meu amor.”
-          <span id="cursor" class="typing-cursor" style="display:none"></span>
-        </div>
-        <div id="subtitle" style="margin-top:12px;color:var(--muted)">
-          O amor de Deus Pai por Jesus é o mesmo amor que Ele tem por você. Que Ele te envolva ainda mais com essa ternura e paz que eu vejo em você, Gabii! Você é uma pessoa muito especial pra mim. Quando eu tiver a oportunidade e com o seu consentimento, claro, eu te dou um abração menina 🫶🏽
-        </div>
-
-        <!-- JOGUINHO -->
-        <div class="archery-wrapper">
-          <div class="archery-header">
-            <div class="archery-question">
-              Topa um dia viajar comigo para Paris só pra tomar um café e voltar no mesmo dia? ☕️🗼✈️
+      <div class="card-inner">
+        <header class="header">
+          <div class="title-area">
+            <div class="badge">
+              <span class="badge-dot"></span>
+              <span>Leitura guiada • Diário</span>
             </div>
-            <div class="archery-hint">
-              Arraste o dedo em direção ao alvo. O SIM é mais perto, mas NÃO tá lá no fundo. 🤣
+            <h1 class="title">
+              Versos
+              <span class="brand">ACF</span>
+              em foco
+            </h1>
+            <p class="subtitle">
+              Um versículo por vez, para você respirar fundo, ler com calma
+              e deixar a Palavra de Deus falar com você.
+            </p>
+          </div>
+
+          <div class="timer-pill">
+            <div class="timer-dot"></div>
+            <span>
+              Troca automática em
+              <strong id="countdown">60s</strong>
+            </span>
+          </div>
+        </header>
+
+        <section class="layout">
+          <article class="verse-card">
+            <div class="verse-ref" id="verseRef">
+              <span>Carregando referência…</span>
+              <span class="version-tag">ACF</span>
             </div>
+
+            <p class="verse-text" id="verseText">
+              Preparando o primeiro versículo…
+            </p>
+
+            <p class="verse-helper">
+              Use esse minuto para meditar, orar em cima do texto
+              e deixar ele descer do intelecto para o coração.
+            </p>
+          </article>
+
+          <aside class="controls-card">
+            <div>
+              <div class="progress-row">
+                <div class="progress-labels">
+                  <span class="progress-title">
+                    Sessão de meditação
+                  </span>
+                  <span class="progress-subtitle">
+                    Versículo <span id="currentIndexLabel">1</span> de
+                    <span id="totalVersesLabel">—</span>
+                  </span>
+                </div>
+              </div>
+
+              <div style="margin-top: 10px;">
+                <div class="progress-bar-wrapper">
+                  <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="progress-badges">
+                  <span style="font-size: 0.72rem;">
+                    Próxima troca em <strong id="countdownInline">60s</strong>
+                  </span>
+                  <div class="stats">
+                    <span class="stat-pill">
+                      <span id="readCount">0</span> lidos hoje
+                    </span>
+                    <span class="stat-pill">
+                      <span id="loopIndicator">Primeira volta</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button class="primary-button" id="nextButton" type="button">
+              <span>Próximo versículo</span>
+              <span class="chevron">➜</span>
+            </button>
+          </aside>
+        </section>
+
+        <footer class="footer">
+          <div class="chips">
+            <span class="chip">1 min por verso</span>
+            <span class="chip">Modo silencioso</span>
+            <span class="chip">Funciona offline</span>
           </div>
-
-          <canvas id="archery-canvas" height="190"></canvas>
-
-          <div id="game-message">
-            Vamo lá que tá fácil hehehe
+          <div>
+            <span>Personalize os textos com a sua lista ACF.</span>
           </div>
-        </div>
-
-        <div style="margin-top:14px;color:var(--muted);font-size:13px;text-align:center">
-          — Feito com carinho por Erick —
-        </div>
+        </footer>
       </div>
-
-      <div class="footer">💌💫💛</div>
-
-      <div id="spark-container" aria-hidden="true"
-           style="position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none;"></div>
-    </div>
-  </div>
-
-  <canvas class="confetti-canvas" id="confetti"></canvas>
+    </section>
+  </main>
 
   <script>
-    const recipient = 'Gabi';
-    document.getElementById('title').textContent = `Bom dia, ${recipient} ✨`;
+    // 🔹 Lista de versículos (substitua o "text" pelo versículo ACF completo)
+    const verses = [
+      {
+        ref: "João 3:16",
+        text: "Cole aqui o texto completo deste versículo na versão ACF."
+      },
+      {
+        ref: "Salmos 23:1",
+        text: "Cole aqui o texto completo deste versículo na versão ACF."
+      },
+      {
+        ref: "Filipenses 4:6-7",
+        text: "Cole aqui o texto completo destes versículos na versão ACF."
+      },
+      {
+        ref: "Romanos 8:28",
+        text: "Cole aqui o texto completo deste versículo na versão ACF."
+      },
+      {
+        ref: "Isaías 41:10",
+        text: "Cole aqui o texto completo deste versículo na versão ACF."
+      },
+      {
+        ref: "Provérbios 3:5-6",
+        text: "Cole aqui o texto completo destes versículos na versão ACF."
+      }
+      // Você pode adicionar quantos quiser
+    ];
 
-    const heart = document.getElementById('heart');
-    const reveal = document.getElementById('reveal');
-    const preview = document.getElementById('preview');
-    const confettiCanvas = document.getElementById('confetti');
-    const sparkContainer = document.getElementById('spark-container');
-    const gameMessageElem = document.getElementById('game-message');
+    // Configurações
+    const INTERVAL_MS = 60_000; // 1 minuto
+    let remainingMs = INTERVAL_MS;
+    let currentIndex = 0;
+    let readCount = 0;
 
-    /* ---------- áudio ---------- */
-    function playChime(){
-      try{
-        const ctx = new (window.AudioContext||window.webkitAudioContext)();
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.type='sine'; o.frequency.value=880;
-        g.gain.value=0.0001;
-        o.connect(g); g.connect(ctx.destination);
-        const now = ctx.currentTime;
-        g.gain.setValueAtTime(0.0001, now);
-        g.gain.exponentialRampToValueAtTime(0.06, now+0.02);
-        o.start(now);
-        g.gain.exponentialRampToValueAtTime(0.0001, now+1.2);
-        o.stop(now+1.3);
-      }catch(e){console.warn('Audio not supported', e);}
+    // Elementos
+    const verseRefEl = document.getElementById("verseRef");
+    const verseTextEl = document.getElementById("verseText");
+    const countdownEl = document.getElementById("countdown");
+    const countdownInlineEl = document.getElementById("countdownInline");
+    const progressBarEl = document.getElementById("progressBar");
+    const currentIndexLabelEl = document.getElementById("currentIndexLabel");
+    const totalVersesLabelEl = document.getElementById("totalVersesLabel");
+    const readCountEl = document.getElementById("readCount");
+    const loopIndicatorEl = document.getElementById("loopIndicator");
+    const nextButton = document.getElementById("nextButton");
+
+    totalVersesLabelEl.textContent = verses.length.toString();
+
+    // Timer
+    let timerId = null;
+
+    function formatSeconds(ms) {
+      const sec = Math.ceil(ms / 1000);
+      return `${sec}s`;
     }
 
-    /* ---------- confete ---------- */
-    function burstConfetti(){
-      const c = confettiCanvas;
-      const w = c.width = window.innerWidth;
-      const h = c.height = window.innerHeight;
-      const ctx = c.getContext('2d');
-      const colors = ['#ffb4c6','#ffd6a5','#c7f9cc','#bde0fe','#ffd6e0'];
-      let pieces = [];
-      for(let i=0;i<80;i++){
-        pieces.push({
-          x: Math.random()*w,
-          y: Math.random()*(-h*0.5),
-          vy: 2 + Math.random()*4,
-          vx: (Math.random()-0.5)*5,
-          r: 2 + Math.random()*6,
-          color: colors[Math.floor(Math.random()*colors.length)]
-        });
-      }
-      let t=0;
-      function loop(){
-        ctx.clearRect(0,0,w,h);
-        pieces.forEach(p=>{
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy += 0.05;
-          ctx.fillStyle = p.color;
-          ctx.fillRect(p.x,p.y,p.r,p.r*1.6);
-        });
-        t++;
-        if(t<200) requestAnimationFrame(loop);
-        else ctx.clearRect(0,0,w,h);
-      }
-      loop();
+    function updateCountdown() {
+      const value = formatSeconds(remainingMs);
+      countdownEl.textContent = value;
+      countdownInlineEl.textContent = value;
+      const percentage = 100 - (remainingMs / INTERVAL_MS) * 100;
+      progressBarEl.style.width = `${percentage}%`;
     }
 
-    /* ---------- sparks ---------- */
-    function emitSparks(x, y, count = 12){
-      for(let i=0;i<count;i++){
-        const s = document.createElement('div');
-        s.className = 'spark spark-ring';
-        const palette = ['#fff9c4','#ffd6a5','#ffb4c6','#bde0fe','#c7f9cc'];
-        s.style.background = palette[Math.floor(Math.random()*palette.length)];
-        const angle = (Math.random()*Math.PI*2);
-        const dist = 40 + Math.random()*70;
-        const tx = Math.round(Math.cos(angle)*dist) + 'px';
-        const ty = Math.round(Math.sin(angle)*dist) + 'px';
-        s.style.setProperty('--tx', tx);
-        s.style.setProperty('--ty', ty);
-        s.style.left = `${x}px`;
-        s.style.top = `${y}px`;
-        const size = 6 + Math.random()*8;
-        s.style.width = `${size}px`;
-        s.style.height = `${size}px`;
-        sparkContainer.appendChild(s);
-        setTimeout(()=>{ s.remove(); }, 800);
-      }
-    }
-
-    function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
-
-    async function typeText(elem, fullText, {speed = 35, sparkEvery = 2, sparkCount=6} = {}){
-      elem.textContent = '';
-      const cursor = document.getElementById('cursor');
-      if(cursor) cursor.style.display = 'inline-block';
-      let count = 0;
-      for(let i=0;i<fullText.length;i++){
-        const ch = fullText[i];
-        elem.textContent += ch;
-        count++;
-        if(count % sparkEvery === 0){
-          const hr = heart.getBoundingClientRect();
-          const card = document.querySelector('.card').getBoundingClientRect();
-          const x = (hr.left + hr.right)/2 - card.left;
-          const y = (hr.top + hr.bottom)/2 - card.top;
-          emitSparks(x, y, sparkCount);
-        }
-        await sleep(speed + Math.random()*15);
-      }
-      if(cursor) cursor.style.display = 'none';
-    }
-
-    /* ---------- abrir card ---------- */
-    function openCard(){
-      if(reveal.getAttribute('aria-hidden')==='false') return;
-      preview.style.display='none';
-      reveal.style.display='block';
-      requestAnimationFrame(()=>{
-        reveal.style.opacity='1';
-        reveal.style.transform='translateY(0)';
-        reveal.setAttribute('aria-hidden','false');
-        heart.classList.add('pulse');
-        setTimeout(()=>heart.classList.remove('pulse'),400);
+    function setFadeAnimation() {
+      verseTextEl.classList.remove("fade-enter", "fade-enter-active");
+      void verseTextEl.offsetWidth; // força reflow
+      verseTextEl.classList.add("fade-enter");
+      requestAnimationFrame(() => {
+        verseTextEl.classList.add("fade-enter-active");
       });
-
-      playChime();
-      burstConfetti();
-
-      const quoteElem = document.getElementById('quote');
-      const originalQuote = `“Assim como o Pai me amou, também Eu amei vocês. Permaneçam no meu amor.”`;
-
-      (async ()=>{
-        await sleep(220);
-        await typeText(quoteElem, originalQuote, {speed: 32, sparkEvery: 2, sparkCount: 6});
-      })();
     }
 
-    heart.addEventListener('click', openCard);
-    heart.addEventListener('touchend', (e)=>{ e.preventDefault(); openCard(); });
+    function showVerse(index) {
+      const verse = verses[index];
+      // Atualiza referência
+      verseRefEl.innerHTML = `
+        <span>${verse.ref}</span>
+        <span class="version-tag">ACF</span>
+      `;
+      // Atualiza texto
+      verseTextEl.textContent = verse.text;
+      // Atualiza labels
+      currentIndexLabelEl.textContent = (index + 1).toString();
 
-    heart.setAttribute('tabindex','0');
-    heart.addEventListener('keydown', (e)=>{
-      if(e.key==='Enter' || e.key===' '){
-        e.preventDefault();
-        openCard();
-      }
-    });
-
-    document.addEventListener('click', (e)=>{
-      if(!document.querySelector('.card').contains(e.target) && reveal.style.display==='block'){
-        reveal.style.opacity='0';
-        reveal.style.transform='translateY(10px)';
-        reveal.setAttribute('aria-hidden','true');
-        setTimeout(()=>{
-          document.getElementById('quote').textContent = '';
-          reveal.style.display='none';
-          preview.style.display='block';
-        }, 450);
-      }
-    });
-
-    function resizeCanvas(){
-      const c = confettiCanvas;
-      c.width = window.innerWidth;
-      c.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    /* ---------- JOGO COM ARRASTAR / SOLTAR ---------- */
-
-    const archeryCanvas = document.getElementById('archery-canvas');
-    const archeryCtx = archeryCanvas.getContext('2d');
-    let dpr = window.devicePixelRatio || 1;
-    let aw = 0, ah = 0;
-
-    const bow = { x:0, y:0 };
-    const arrow = { x:0, y:0, vx:0, vy:0, active:false };
-
-    const simTarget = { x:0, y:0, r:0, type:'sim' };
-    const naoTarget = { x:0, y:0, r:0, type:'nao' };
-
-    let aiming = false;
-    let aimCurrent = {x:0,y:0};
-    let animating = false;
-
-    // efeitos visuais
-    let simGlow = 0;     // brilho forte quando acerta SIM
-    let naoShake = 0;    // frames de tremida do NÃO
-
-    const simMessages = [
-      'Você acertou o SIM com categoria. Paris que lute pra te receber. 🗼✈️',
-      'SIM no alvo! Já tô vendo a foto com a Torre Eiffel ao fundo. 📸',
-      'Pontaria afiada! 💘',
-      'Eitaa nois. Agora só faltam as malas e os euros, detalhes… 😌',
-      'SIM bem dado! A amizade aqui já tá em nível roteiro de filme. 🎬'
-    ];
-    const naoMessages = [
-      'Acertou o NÃO… mas eu tenho certeza que seu coração mirou pro lado certo. 😉',
-      'NÃO cravado! Vou fingir que foi só teste de mira, tá? 😏',
-      'Você mirou no NÃO, mas eu li “talvez outro dia”.',
-      'NÃO perfeito! Só que o convite continua valendo em modo imaginário. 🌌',
-      'NÃO em cheio, mas eu prometo voltar com outro convite impossível. 😆'
-    ];
-    const missMessages = [
-      'Quase! A flecha foi passear e ainda não decidiu pra qual alvo vai. 😂',
-      'Nada de alvo dessa vez, a flecha já deve tá chegando lá. 🎯',
-      'Errou por tão pouco que eu consideraria meio SIM.',
-      'Flecha tímida hoje… manda outra pra ver se ela cria coragem. 😜'
-    ];
-
-    function rand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-    function setupArcherySize(){
-      const rect = archeryCanvas.getBoundingClientRect();
-      dpr = window.devicePixelRatio || 1;
-      const logicalWidth = rect.width || 320;
-      const logicalHeight = logicalWidth * 0.55;
-
-      archeryCanvas.width = logicalWidth * dpr;
-      archeryCanvas.height = logicalHeight * dpr;
-      archeryCanvas.style.height = logicalHeight + 'px';
-
-      aw = archeryCanvas.width;
-      ah = archeryCanvas.height;
-
-      bow.x = aw * 0.18;
-      bow.y = ah * 0.70;
-
-      // mantidos como estavam
-      simTarget.x = aw * 0.70;
-      simTarget.y = ah * 0.68;
-      simTarget.r = 26 * dpr;
-
-      naoTarget.x = aw * 0.90;
-      naoTarget.y = ah * 0.42;
-      naoTarget.r = 18 * dpr;
-
-      resetArrow();
-      drawArcheryScene();
+      // Animação suave
+      setFadeAnimation();
     }
 
-    function resetArrow(){
-      arrow.x = bow.x + 10*dpr;
-      arrow.y = bow.y - 8*dpr;
-      arrow.vx = 0;
-      arrow.vy = 0;
-      arrow.active = false;
+    function nextVerse(manual = false) {
+      currentIndex = (currentIndex + 1) % verses.length;
+      showVerse(currentIndex);
+
+      // Conta quantos foram lidos
+      readCount++;
+      readCountEl.textContent = readCount.toString();
+
+      if (readCount > verses.length) {
+        loopIndicatorEl.textContent = "Segunda volta 🙌";
+      }
+      if (readCount > verses.length * 2) {
+        loopIndicatorEl.textContent = "Persistência linda ✨";
+      }
+
+      // Reinicia o ciclo
+      remainingMs = INTERVAL_MS;
+      updateCountdown();
     }
 
-    // ALVOS: mantendo o desenho, mas colocando o texto no centro
-    // e adicionando:
-    // - SIM com pulsar levinho
-    // - NÃO tremendo quando quase acerta
-    // - brilho extra (glow) quando acerta o SIM
-    function drawTarget(t,label,isNear,opts = {}){
-      const ctx = archeryCtx;
-      const { pulse=false, glow=0, shake=false } = opts;
-
-      // tremida do NÃO = leve jitter na posição de desenho (não muda hitbox)
-      let jitterX = 0, jitterY = 0;
-      if(shake){
-        jitterX = (Math.random()-0.5) * 3 * dpr;
-        jitterY = (Math.random()-0.5) * 3 * dpr;
+    function startTimer() {
+      if (timerId) {
+        clearInterval(timerId);
       }
+      remainingMs = INTERVAL_MS;
+      updateCountdown();
 
-      const cx = t.x + jitterX;
-      const cy = t.y + jitterY;
-      const baseY = cy + (isNear ? t.r*1.8 : t.r*2.1);
-
-      // halo / brilho (SIM pulsando e glow quando acerta)
-      if(pulse || glow > 0){
-        const time = performance.now();
-        const pulseWave = pulse ? (0.5 + 0.5 * Math.sin(time/260)) : 0;
-        const intensity = 0.15 + pulseWave*0.25 + glow*0.4;
-        const outerR = t.r * (2.1 + pulseWave*0.3 + glow*0.5);
-
-        ctx.save();
-        const halo = ctx.createRadialGradient(
-          cx, cy, t.r*0.4,
-          cx, cy, outerR
-        );
-        halo.addColorStop(0, `rgba(250, 204, 21, ${intensity})`);
-        halo.addColorStop(1, 'rgba(250, 204, 21, 0)');
-        ctx.fillStyle = halo;
-        ctx.beginPath();
-        ctx.arc(cx, cy, outerR, 0, Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // haste do alvo
-      ctx.save();
-      ctx.strokeStyle = 'rgba(148,163,184,0.85)';
-      ctx.lineWidth = 2*dpr;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy + t.r*0.9);
-      ctx.lineTo(cx, baseY);
-      ctx.stroke();
-      ctx.restore();
-
-      // sombra suave do alvo
-      ctx.save();
-      const gradShadow = ctx.createRadialGradient(
-        cx + t.r*0.2, cy - t.r*0.2, t.r*0.2,
-        cx, cy, t.r*1.4
-      );
-      gradShadow.addColorStop(0,'rgba(15,23,42,0.2)');
-      gradShadow.addColorStop(1,'rgba(15,23,42,0)');
-      ctx.fillStyle = gradShadow;
-      ctx.beginPath();
-      ctx.arc(cx,cy,t.r*1.6,0,Math.PI*2);
-      ctx.fill();
-      ctx.restore();
-
-      // anéis do alvo (mantendo estilo, sem mudar tamanhos base)
-      const rings = isNear ? 4 : 3;
-      for(let i=rings;i>=1;i--){
-        const ratio = i/rings;
-        const radius = t.r * ratio;
-        let color;
-        if(i===rings) color = '#0f172a';
-        else if(i===1) color = '#facc15';
-        else if(i===2) color = '#f97373';
-        else color = '#e2e8f0';
-
-        ctx.save();
-        const grad = ctx.createRadialGradient(
-          cx - radius*0.4, cy - radius*0.6, radius*0.2,
-          cx, cy, radius*1.1
-        );
-        grad.addColorStop(0,color);
-        grad.addColorStop(1,'#020617');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(cx,cy,radius,0,Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // texto central “SIM” / “NÃO”
-      ctx.save();
-      ctx.font = `${11*dpr}px system-ui, -apple-system, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = 'rgba(248,250,252,0.98)';
-      ctx.shadowColor = 'rgba(15,23,42,0.8)';
-      ctx.shadowBlur = 3*dpr;
-      ctx.fillText(label, cx, cy);
-      ctx.restore();
-    }
-
-    // arco corrigido (curvando pra direita, em direção aos alvos)
-    function drawBowAndArrow(){
-      const ctx = archeryCtx;
-
-      // sombra do arco
-      ctx.save();
-      ctx.strokeStyle = 'rgba(15,23,42,0.9)';
-      ctx.lineWidth = 8*dpr;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(bow.x + 6*dpr, bow.y - 55*dpr);
-      ctx.quadraticCurveTo(bow.x + 26*dpr, bow.y, bow.x + 6*dpr, bow.y + 55*dpr);
-      ctx.stroke();
-      ctx.restore();
-
-      // arco principal
-      ctx.save();
-      const gradBow = ctx.createLinearGradient(
-        bow.x+18*dpr, bow.y-50*dpr,
-        bow.x-8*dpr, bow.y+50*dpr
-      );
-      gradBow.addColorStop(0,'#f97316');
-      gradBow.addColorStop(0.5,'#eab308');
-      gradBow.addColorStop(1,'#fde68a');
-      ctx.strokeStyle = gradBow;
-      ctx.lineWidth = 4.3*dpr;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(bow.x + 4*dpr, bow.y - 50*dpr);
-      ctx.quadraticCurveTo(bow.x + 20*dpr, bow.y, bow.x + 4*dpr, bow.y + 50*dpr);
-      ctx.stroke();
-      ctx.restore();
-
-      // corda (lado da Gabi)
-      ctx.save();
-      ctx.strokeStyle = 'rgba(241,245,249,0.85)';
-      ctx.lineWidth = 1.4*dpr;
-      ctx.beginPath();
-      ctx.moveTo(bow.x + 4*dpr, bow.y - 50*dpr);
-      ctx.lineTo(bow.x - 10*dpr, bow.y);
-      ctx.lineTo(bow.x + 4*dpr, bow.y + 50*dpr);
-      ctx.stroke();
-      ctx.restore();
-
-      // flecha
-      ctx.save();
-      ctx.translate(arrow.x, arrow.y);
-      const angle = Math.atan2(arrow.vy || -0.15, arrow.vx || 1);
-      ctx.rotate(angle);
-
-      ctx.strokeStyle = '#e5e7eb';
-      ctx.lineWidth = 2*dpr;
-      ctx.beginPath();
-      ctx.moveTo(-18*dpr, 0);
-      ctx.lineTo(18*dpr, 0);
-      ctx.stroke();
-
-      ctx.fillStyle = '#facc15';
-      ctx.beginPath();
-      ctx.moveTo(18*dpr, 0);
-      ctx.lineTo(12*dpr, 4*dpr);
-      ctx.lineTo(12*dpr, -4*dpr);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = '#38bdf8';
-      ctx.beginPath();
-      ctx.moveTo(-18*dpr, 0);
-      ctx.lineTo(-25*dpr, 5*dpr);
-      ctx.lineTo(-25*dpr, -5*dpr);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.restore();
-    }
-
-    function drawArcheryScene(){
-      const ctx = archeryCtx;
-      ctx.clearRect(0,0,aw,ah);
-
-      const gradSky = ctx.createLinearGradient(0,0,0,ah);
-      gradSky.addColorStop(0,'#020617');
-      gradSky.addColorStop(0.5,'#02081f');
-      gradSky.addColorStop(1,'#020617');
-      ctx.fillStyle = gradSky;
-      ctx.fillRect(0,0,aw,ah);
-
-      const groundY = ah*0.78;
-      ctx.save();
-      const gradGround = ctx.createLinearGradient(0,groundY,0,ah);
-      gradGround.addColorStop(0,'#020617');
-      gradGround.addColorStop(1,'#020617');
-      ctx.fillStyle = gradGround;
-      ctx.fillRect(0,groundY,aw,ah-groundY);
-      ctx.restore();
-
-      ctx.save();
-      ctx.fillStyle = '#02081f';
-      ctx.beginPath();
-      ctx.moveTo(0, groundY-25*dpr);
-      ctx.quadraticCurveTo(aw*0.35, groundY-55*dpr, aw*0.7, groundY-25*dpr);
-      ctx.quadraticCurveTo(aw*0.88, groundY-10*dpr, aw, groundY-18*dpr);
-      ctx.lineTo(aw, groundY+40*dpr);
-      ctx.lineTo(0, groundY+40*dpr);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-
-      // atualiza timers de efeitos
-      if(simGlow > 0){
-        simGlow = Math.max(0, simGlow - 0.02);
-      }
-      if(naoShake > 0){
-        naoShake -= 1;
-      }
-
-      // SIM pulsando sempre, com glow quando acerta
-      drawTarget(simTarget,'SIM',true,{ pulse:true, glow:simGlow, shake:false });
-      // NÃO normal, mas pode tremer
-      drawTarget(naoTarget,'NÃO',false,{ pulse:false, glow:0, shake: naoShake > 0 });
-
-      drawBowAndArrow();
-
-      if(aiming){
-        ctx.save();
-        ctx.strokeStyle = 'rgba(148,163,184,0.8)';
-        ctx.setLineDash([6*dpr,4*dpr]);
-        ctx.lineWidth = 1.4*dpr;
-        ctx.beginPath();
-        ctx.moveTo(bow.x + 10*dpr, bow.y - 8*dpr);
-        ctx.lineTo(aimCurrent.x, aimCurrent.y);
-        ctx.stroke();
-        ctx.restore();
-      }
-    }
-
-    function hitTarget(t){
-      const dx = arrow.x - t.x;
-      const dy = arrow.y - t.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      return dist <= t.r*0.9;
-    }
-
-    function updateArrow(){
-      if(!arrow.active) return;
-      arrow.x += arrow.vx;
-      arrow.y += arrow.vy;
-      arrow.vy += 0.22 * dpr;
-
-      const hitSim = hitTarget(simTarget);
-      const hitNao = hitTarget(naoTarget);
-
-      // "quase acerta" o NÃO => tremida
-      if(!hitNao){
-        const dxN = arrow.x - naoTarget.x;
-        const dyN = arrow.y - naoTarget.y;
-        const distN = Math.sqrt(dxN*dxN + dyN*dyN);
-        if(distN < naoTarget.r * 1.6 && distN > naoTarget.r * 1.0){
-          naoShake = 14; // alguns frames tremendo
+      timerId = setInterval(() => {
+        remainingMs -= 1000;
+        if (remainingMs <= 0) {
+          nextVerse(true);
+        } else {
+          updateCountdown();
         }
-      }
-
-      const off =
-        arrow.x > aw + 40*dpr ||
-        arrow.y > ah + 40*dpr ||
-        arrow.y < -40*dpr;
-
-      if(hitSim || hitNao || off){
-        arrow.active = false;
-        if(hitSim){
-          gameMessageElem.textContent = rand(simMessages);
-          burstConfetti();
-          playChime();
-          simGlow = 1; // brilho forte no SIM quando acerta
-        }else if(hitNao){
-          gameMessageElem.textContent = rand(naoMessages);
-        }else{
-          gameMessageElem.textContent = rand(missMessages);
-        }
-        setTimeout(resetArrow, 600);
-      }
+      }, 1000);
     }
 
-    function archeryLoop(){
-      updateArrow();
-      drawArcheryScene();
-      requestAnimationFrame(archeryLoop);
-    }
+    // Início
+    showVerse(currentIndex);
+    updateCountdown();
+    startTimer();
 
-    function canvasCoords(evt){
-      const rect = archeryCanvas.getBoundingClientRect();
-      const scaleX = archeryCanvas.width / rect.width;
-      const scaleY = archeryCanvas.height / rect.height;
-      const clientX = evt.clientX ?? evt.touches[0].clientX;
-      const clientY = evt.clientY ?? evt.touches[0].clientY;
-      return {
-        x: (clientX - rect.left) * scaleX,
-        y: (clientY - rect.top) * scaleY
-      };
-    }
-
-    function handlePointerDown(e){
-      const pos = canvasCoords(e);
-      if(pos.x > aw*0.45 || pos.y < ah*0.25) return;
-      if(arrow.active) return;
-      aiming = true;
-      aimCurrent = pos;
-      gameMessageElem.textContent = 'Puxa a flecha e solta pra ver onde o coração acerta. 💘';
-      archeryCanvas.setPointerCapture?.(e.pointerId);
-      e.preventDefault();
-    }
-
-    function handlePointerMove(e){
-      if(!aiming) return;
-      aimCurrent = canvasCoords(e);
-      e.preventDefault();
-    }
-
-    function handlePointerUp(e){
-      if(!aiming) return;
-      aiming = false;
-      archeryCanvas.releasePointerCapture?.(e.pointerId);
-
-      const dx = aimCurrent.x - bow.x;
-      const dy = aimCurrent.y - bow.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if(dist < 28*dpr){
-        gameMessageElem.textContent = 'Puxa um pouquinho mais forte pra flecha ganhar distância. 😉';
-        return;
-      }
-
-      const angle = Math.atan2(dy, dx);
-      const force = Math.min(dist / (36*dpr), 10);
-      arrow.x = bow.x + 10*dpr;
-      arrow.y = bow.y - 8*dpr;
-      arrow.vx = Math.cos(angle) * force * 2.4;
-      arrow.vy = Math.sin(angle) * force * 2.0;
-      arrow.active = true;
-
-      e.preventDefault();
-    }
-
-    function initArcheryGame(){
-      setupArcherySize();
-      if(!animating){
-        animating = true;
-        archeryLoop();
-      }
-
-      archeryCanvas.addEventListener('pointerdown', handlePointerDown);
-      archeryCanvas.addEventListener('pointermove', handlePointerMove);
-      archeryCanvas.addEventListener('pointerup', handlePointerUp);
-      archeryCanvas.addEventListener('pointercancel', handlePointerUp);
-
-      archeryCanvas.addEventListener('touchstart',(e)=>{
-        const touchEvent = {clientX:e.touches[0].clientX, clientY:e.touches[0].clientY};
-        handlePointerDown(touchEvent);
-      },{passive:false});
-      archeryCanvas.addEventListener('touchmove',(e)=>{
-        const touchEvent = {clientX:e.touches[0].clientX, clientY:e.touches[0].clientY};
-        handlePointerMove(touchEvent);
-      },{passive:false});
-      archeryCanvas.addEventListener('touchend',(e)=>{
-        const touchEvent = {clientX:e.changedTouches[0].clientX, clientY:e.changedTouches[0].clientY};
-        handlePointerUp(touchEvent);
-      },{passive:false});
-    }
-
-    window.addEventListener('resize', setupArcherySize);
-
-    initArcheryGame();
+    // Clique no botão "Próximo versículo"
+    nextButton.addEventListener("click", () => {
+      nextVerse(true);
+      // Ao clicar, também "reseta" o minuto
+      remainingMs = INTERVAL_MS;
+      updateCountdown();
+    });
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
