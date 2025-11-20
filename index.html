@@ -477,11 +477,11 @@
 
       <footer class="footer">
         <div class="chips">
-          <span class="chip">Versos ACF via API</span>
+          <span class="chip">Versos ACF via API (com fallback)</span>
           <span class="chip">Paisagem aleatória</span>
           <span class="chip">Auto a cada 1 min</span>
         </div>
-        <span>Texto bíblico fornecido por ABíbliaDigital.com.br.</span>
+        <span>Texto bíblico fornecido por ABíbliaDigital.com.br quando disponível.</span>
       </footer>
     </section>
   </main>
@@ -492,14 +492,40 @@
     // =========================
     var BIBLE_API_BASE = "https://www.abibliadigital.com.br/api";
     var VERSION = "acf";
-    var INTERVAL_MS = 60000; // 1 minuto (sem separador numérico)
+    var INTERVAL_MS = 60000; // 1 minuto
 
-    // Paisagens: Unsplash Source (imagem aleatória por URL)
-    var LANDSCAPE_URL =
-      "https://source.unsplash.com/1600x900/?landscape,nature,forest,sunset";
+    // Paisagens: picsum.photos (placeholder com blur)
+    var LANDSCAPE_URL_BASE = "https://picsum.photos/1600/900?blur=1&random=";
+
+    // Referências locais (fallback quando a API não responder / CORS)
+    var LOCAL_REFERENCES = [
+      {
+        reference: "Salmos 23:1 (ACF)",
+        text: "Abra sua Bíblia em Salmos 23:1 na versão ACF e medite nessa verdade hoje."
+      },
+      {
+        reference: "João 3:16 (ACF)",
+        text: "Abra sua Bíblia em João 3:16 na versão ACF e relembre o amor de Deus por você."
+      },
+      {
+        reference: "Filipenses 4:6-7 (ACF)",
+        text: "Leia Filipenses 4:6-7 na sua Bíblia ACF e entregue suas preocupações em oração."
+      },
+      {
+        reference: "Romanos 8:28 (ACF)",
+        text: "Busque Romanos 8:28 na versão ACF e descanse em como Deus conduz todas as coisas."
+      },
+      {
+        reference: "Isaías 41:10 (ACF)",
+        text: "Leia Isaías 41:10 em sua Bíblia ACF e lembre-se de que Deus é contigo."
+      },
+      {
+        reference: "Provérbios 3:5-6 (ACF)",
+        text: "Medite em Provérbios 3:5-6 na versão ACF, confiando no Senhor de todo o coração."
+      }
+    ];
 
     // Estado
-    var booksCache = null;
     var remainingMs = INTERVAL_MS;
     var timerId = null;
     var readCount = 0;
@@ -543,83 +569,58 @@
     }
 
     function refreshBackground() {
-      // adiciona timestamp pra forçar imagem nova
-      var url = LANDSCAPE_URL + "&t=" + Date.now();
+      // usa timestamp para imagem diferente
+      var url = LANDSCAPE_URL_BASE + Date.now();
       var img = new Image();
       img.onload = function () {
         bgImageEl.style.backgroundImage = 'url("' + url + '")';
       };
+      img.onerror = function () {
+        console.warn("Falha ao carregar imagem de fundo");
+      };
       img.src = url;
     }
 
-    function loadBooks() {
-      if (booksCache) return Promise.resolve(booksCache);
+    function getRandomLocalVerse() {
+      var index = Math.floor(Math.random() * LOCAL_REFERENCES.length);
+      return LOCAL_REFERENCES[index];
+    }
 
-      return fetch(BIBLE_API_BASE + "/books")
+    // Tenta pegar versículo aleatório da API da Bíblia Digital
+    function fetchRandomVerseFromApi() {
+      var url = BIBLE_API_BASE + "/verses/" + VERSION + "/random";
+
+      return fetch(url, {
+        headers: {
+          "Authorization": "Bearer free"
+        }
+      })
         .then(function (res) {
           if (!res.ok) {
-            throw new Error("Falha ao carregar livros da Bíblia");
+            throw new Error("Resposta não OK da API: " + res.status);
           }
           return res.json();
         })
         .then(function (data) {
-          booksCache = data;
-          return data;
+          var bookName = data.book && data.book.name ? data.book.name : "";
+          var chapter = data.chapter || "";
+          var number = data.number || "";
+          var reference = bookName + " " + chapter + ":" + number;
+
+          return {
+            reference: reference,
+            text: data.text || "Texto do versículo não encontrado."
+          };
         });
     }
 
-    function fetchRandomVerseACF() {
-      // 1. Carrega livros
-      return loadBooks().then(function (books) {
-        if (!Array.isArray(books) || books.length === 0) {
-          throw new Error("Lista de livros vazia");
-        }
-
-        // 2. Escolhe livro aleatório
-        var randomBook = books[Math.floor(Math.random() * books.length)];
-
-        var abbrev;
-        if (randomBook.abbrev && randomBook.abbrev.pt) {
-          abbrev = randomBook.abbrev.pt;
-        } else if (randomBook.abbrev) {
-          abbrev = randomBook.abbrev;
-        } else {
-          abbrev = "gn";
-        }
-
-        var totalChapters = randomBook.chapters || 1;
-        var chapter = Math.floor(Math.random() * totalChapters) + 1;
-
-        // 3. Busca capítulo na versão ACF
-        var versesUrl = BIBLE_API_BASE + "/verses/" + VERSION + "/" + abbrev + "/" + chapter;
-
-        return fetch(versesUrl)
-          .then(function (res) {
-            if (!res.ok) {
-              throw new Error("Falha ao carregar capítulo");
-            }
-            return res.json();
-          })
-          .then(function (data) {
-            var verses = data.verses || [];
-            if (!verses.length) {
-              throw new Error("Capítulo sem versículos");
-            }
-
-            // 4. Versículo aleatório do capítulo
-            var randomVerse = verses[Math.floor(Math.random() * verses.length)];
-
-            var bookName = (data.book && data.book.name) ? data.book.name : randomBook.name;
-            var chapterNumber = (data.chapter && data.chapter.number) ? data.chapter.number : chapter;
-
-            var reference = bookName + " " + chapterNumber + ":" + randomVerse.number;
-
-            return {
-              reference: reference,
-              text: randomVerse.text || "Texto do versículo não encontrado."
-            };
-          });
-      });
+    // Usa API + fallback local
+    function getVerseWithFallback() {
+      return fetchRandomVerseFromApi()
+        .catch(function (err) {
+          console.warn("Erro ao chamar API da Bíblia Digital, usando fallback local:", err);
+          return getRandomLocalVerse();
+        });
     }
 
     function loadAndShowNewVerse() {
@@ -630,9 +631,9 @@
         <span>Carregando versículo…</span>\
         <span class="version-tag">ACF</span>\
       ';
-      verseTextEl.textContent = "Buscando versículo aleatório na ABíbliaDigital…";
+      verseTextEl.textContent = "Buscando versículo aleatório…";
 
-      fetchRandomVerseACF()
+      getVerseWithFallback()
         .then(function (verse) {
           verseRefEl.innerHTML = '\
             <span>' + verse.reference + '</span>\
