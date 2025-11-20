@@ -1,6 +1,8 @@
-<!doctype html>
+<!doctype html> 
 <html lang="pt-BR">
+
 <head>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Devocional • Versículos ACF</title>
@@ -389,8 +391,11 @@
       transition: opacity 0.22s ease-out, transform 0.22s ease-out;
     }
   </style>
+
 </head>
+
 <body>
+
   <!-- Fundo com paisagem carregada por API -->
   <div class="bg-image" id="bgImage"></div>
   <div class="bg-overlay"></div>
@@ -485,164 +490,183 @@
     // =========================
     // CONFIGURAÇÕES
     // =========================
-    const BIBLE_API_BASE = "https://www.abibliadigital.com.br/api";
-    const VERSION = "acf";
-    const INTERVAL_MS = 60_000; // 1 minuto
+    var BIBLE_API_BASE = "https://www.abibliadigital.com.br/api";
+    var VERSION = "acf";
+    var INTERVAL_MS = 60000; // 1 minuto (sem separador numérico)
 
     // Paisagens: Unsplash Source (imagem aleatória por URL)
-    const LANDSCAPE_URL =
+    var LANDSCAPE_URL =
       "https://source.unsplash.com/1600x900/?landscape,nature,forest,sunset";
 
     // Estado
-    let booksCache = null;
-    let remainingMs = INTERVAL_MS;
-    let timerId = null;
-    let readCount = 0;
-    let isLoadingVerse = false;
+    var booksCache = null;
+    var remainingMs = INTERVAL_MS;
+    var timerId = null;
+    var readCount = 0;
+    var isLoadingVerse = false;
 
     // Elementos
-    const verseRefEl = document.getElementById("verseRef");
-    const verseTextEl = document.getElementById("verseText");
-    const countdownEl = document.getElementById("countdown");
-    const countdownInlineEl = document.getElementById("countdownInline");
-    const progressBarEl = document.getElementById("progressBar");
-    const currentIndexLabelEl = document.getElementById("currentIndexLabel");
-    const readCountEl = document.getElementById("readCount");
-    const loopIndicatorEl = document.getElementById("loopIndicator");
-    const nextButton = document.getElementById("nextButton");
-    const bgImageEl = document.getElementById("bgImage");
+    var verseRefEl = document.getElementById("verseRef");
+    var verseTextEl = document.getElementById("verseText");
+    var countdownEl = document.getElementById("countdown");
+    var countdownInlineEl = document.getElementById("countdownInline");
+    var progressBarEl = document.getElementById("progressBar");
+    var currentIndexLabelEl = document.getElementById("currentIndexLabel");
+    var readCountEl = document.getElementById("readCount");
+    var loopIndicatorEl = document.getElementById("loopIndicator");
+    var nextButton = document.getElementById("nextButton");
+    var bgImageEl = document.getElementById("bgImage");
 
     // =========================
     // FUNÇÕES AUXILIARES
     // =========================
     function formatSeconds(ms) {
-      const sec = Math.ceil(ms / 1000);
-      return `${sec}s`;
+      var sec = Math.ceil(ms / 1000);
+      return sec + "s";
     }
 
     function updateCountdown() {
-      const value = formatSeconds(remainingMs);
+      var value = formatSeconds(remainingMs);
       countdownEl.textContent = value;
       countdownInlineEl.textContent = value;
-      const percentage = 100 - (remainingMs / INTERVAL_MS) * 100;
-      progressBarEl.style.width = `${percentage}%`;
+      var percentage = 100 - (remainingMs / INTERVAL_MS) * 100;
+      progressBarEl.style.width = percentage + "%";
     }
 
     function setFadeAnimation() {
       verseTextEl.classList.remove("fade-enter", "fade-enter-active");
       void verseTextEl.offsetWidth; // força reflow
       verseTextEl.classList.add("fade-enter");
-      requestAnimationFrame(() => {
+      requestAnimationFrame(function () {
         verseTextEl.classList.add("fade-enter-active");
       });
     }
 
     function refreshBackground() {
       // adiciona timestamp pra forçar imagem nova
-      const url = `${LANDSCAPE_URL}&t=${Date.now()}`;
-      const img = new Image();
-      img.onload = () => {
-        bgImageEl.style.backgroundImage = `url("${url}")`;
+      var url = LANDSCAPE_URL + "&t=" + Date.now();
+      var img = new Image();
+      img.onload = function () {
+        bgImageEl.style.backgroundImage = 'url("' + url + '")';
       };
       img.src = url;
     }
 
-    async function loadBooks() {
-      if (booksCache) return booksCache;
+    function loadBooks() {
+      if (booksCache) return Promise.resolve(booksCache);
 
-      const res = await fetch(`${BIBLE_API_BASE}/books`);
-      if (!res.ok) {
-        throw new Error("Falha ao carregar livros da Bíblia");
-      }
-      const data = await res.json();
-      booksCache = data;
-      return data;
+      return fetch(BIBLE_API_BASE + "/books")
+        .then(function (res) {
+          if (!res.ok) {
+            throw new Error("Falha ao carregar livros da Bíblia");
+          }
+          return res.json();
+        })
+        .then(function (data) {
+          booksCache = data;
+          return data;
+        });
     }
 
-    async function fetchRandomVerseACF() {
+    function fetchRandomVerseACF() {
       // 1. Carrega livros
-      const books = await loadBooks();
-      if (!Array.isArray(books) || books.length === 0) {
-        throw new Error("Lista de livros vazia");
-      }
+      return loadBooks().then(function (books) {
+        if (!Array.isArray(books) || books.length === 0) {
+          throw new Error("Lista de livros vazia");
+        }
 
-      // 2. Escolhe livro aleatório
-      const randomBook = books[Math.floor(Math.random() * books.length)];
-      const abbrev = randomBook.abbrev?.pt || randomBook.abbrev || "gn";
-      const totalChapters = randomBook.chapters || 1;
+        // 2. Escolhe livro aleatório
+        var randomBook = books[Math.floor(Math.random() * books.length)];
 
-      const chapter = Math.floor(Math.random() * totalChapters) + 1;
+        var abbrev;
+        if (randomBook.abbrev && randomBook.abbrev.pt) {
+          abbrev = randomBook.abbrev.pt;
+        } else if (randomBook.abbrev) {
+          abbrev = randomBook.abbrev;
+        } else {
+          abbrev = "gn";
+        }
 
-      // 3. Busca capítulo na versão ACF
-      const versesUrl = `${BIBLE_API_BASE}/verses/${VERSION}/${abbrev}/${chapter}`;
-      const res = await fetch(versesUrl);
-      if (!res.ok) {
-        throw new Error("Falha ao carregar capítulo");
-      }
-      const data = await res.json();
+        var totalChapters = randomBook.chapters || 1;
+        var chapter = Math.floor(Math.random() * totalChapters) + 1;
 
-      const verses = data.verses || [];
-      if (!verses.length) {
-        throw new Error("Capítulo sem versículos");
-      }
+        // 3. Busca capítulo na versão ACF
+        var versesUrl = BIBLE_API_BASE + "/verses/" + VERSION + "/" + abbrev + "/" + chapter;
 
-      // 4. Versículo aleatório do capítulo
-      const randomVerse = verses[Math.floor(Math.random() * verses.length)];
+        return fetch(versesUrl)
+          .then(function (res) {
+            if (!res.ok) {
+              throw new Error("Falha ao carregar capítulo");
+            }
+            return res.json();
+          })
+          .then(function (data) {
+            var verses = data.verses || [];
+            if (!verses.length) {
+              throw new Error("Capítulo sem versículos");
+            }
 
-      const reference = `${data.book?.name || randomBook.name} ${
-        data.chapter?.number || chapter
-      }:${randomVerse.number}`;
+            // 4. Versículo aleatório do capítulo
+            var randomVerse = verses[Math.floor(Math.random() * verses.length)];
 
-      return {
-        reference,
-        text: randomVerse.text || "Texto do versículo não encontrado."
-      };
+            var bookName = (data.book && data.book.name) ? data.book.name : randomBook.name;
+            var chapterNumber = (data.chapter && data.chapter.number) ? data.chapter.number : chapter;
+
+            var reference = bookName + " " + chapterNumber + ":" + randomVerse.number;
+
+            return {
+              reference: reference,
+              text: randomVerse.text || "Texto do versículo não encontrado."
+            };
+          });
+      });
     }
 
-    async function loadAndShowNewVerse() {
+    function loadAndShowNewVerse() {
       if (isLoadingVerse) return;
       isLoadingVerse = true;
 
-      verseRefEl.innerHTML = `
-        <span>Carregando versículo…</span>
-        <span class="version-tag">ACF</span>
-      `;
+      verseRefEl.innerHTML = '\
+        <span>Carregando versículo…</span>\
+        <span class="version-tag">ACF</span>\
+      ';
       verseTextEl.textContent = "Buscando versículo aleatório na ABíbliaDigital…";
 
-      try {
-        const verse = await fetchRandomVerseACF();
+      fetchRandomVerseACF()
+        .then(function (verse) {
+          verseRefEl.innerHTML = '\
+            <span>' + verse.reference + '</span>\
+            <span class="version-tag">ACF</span>\
+          ';
+          verseTextEl.textContent = verse.text;
 
-        verseRefEl.innerHTML = `
-          <span>${verse.reference}</span>
-          <span class="version-tag">ACF</span>
-        `;
-        verseTextEl.textContent = verse.text;
+          readCount++;
+          readCountEl.textContent = String(readCount);
+          currentIndexLabelEl.textContent = String(readCount);
 
-        readCount++;
-        readCountEl.textContent = readCount.toString();
-        currentIndexLabelEl.textContent = readCount.toString();
+          if (readCount === 1) {
+            loopIndicatorEl.textContent = "Primeiro passo do dia 🙌";
+          } else if (readCount >= 5 && readCount < 15) {
+            loopIndicatorEl.textContent = "Ritmo bom de meditação 💛";
+          } else if (readCount >= 15) {
+            loopIndicatorEl.textContent = "Sessão profunda de leitura 🔥";
+          }
 
-        if (readCount === 1) {
-          loopIndicatorEl.textContent = "Primeiro passo do dia 🙌";
-        } else if (readCount >= 5 && readCount < 15) {
-          loopIndicatorEl.textContent = "Ritmo bom de meditação 💛";
-        } else if (readCount >= 15) {
-          loopIndicatorEl.textContent = "Sessão profunda de leitura 🔥";
-        }
-
-        setFadeAnimation();
-        refreshBackground();
-      } catch (err) {
-        console.error(err);
-        verseRefEl.innerHTML = `
-          <span>Erro ao carregar</span>
-          <span class="version-tag">ACF</span>
-        `;
-        verseTextEl.textContent =
-          "Não foi possível carregar o versículo agora. Verifique sua conexão ou tente novamente em alguns instantes.";
-      } finally {
-        isLoadingVerse = false;
-      }
+          setFadeAnimation();
+          refreshBackground();
+        })
+        .catch(function (err) {
+          console.error(err);
+          verseRefEl.innerHTML = '\
+            <span>Erro ao carregar</span>\
+            <span class="version-tag">ACF</span>\
+          ';
+          verseTextEl.textContent =
+            "Não foi possível carregar o versículo agora. Verifique sua conexão ou tente novamente em alguns instantes.";
+        })
+        .finally(function () {
+          isLoadingVerse = false;
+        });
     }
 
     function startTimer() {
@@ -652,7 +676,7 @@
       remainingMs = INTERVAL_MS;
       updateCountdown();
 
-      timerId = setInterval(() => {
+      timerId = setInterval(function () {
         remainingMs -= 1000;
         if (remainingMs <= 0) {
           remainingMs = INTERVAL_MS;
@@ -672,16 +696,17 @@
     // =========================
     // INICIALIZAÇÃO
     // =========================
-    (async function init() {
+    (function init() {
       refreshBackground();
-      await loadAndShowNewVerse();
+      loadAndShowNewVerse();
       startTimer();
     })();
 
-    nextButton.addEventListener("click", async () => {
+    nextButton.addEventListener("click", function () {
       resetTimer();
-      await loadAndShowNewVerse();
+      loadAndShowNewVerse();
     });
   </script>
 </body>
+
 </html>
